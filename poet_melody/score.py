@@ -17,6 +17,7 @@ class Note:
     pitch: int              # MIDI
     velocity: int = 90      # 1..127
     lyric: str = ""         # syllable that produced the note (lead only)
+    tone: int = 0           # Mandarin tone of the syllable (0 unknown)
 
     @property
     def end(self) -> float:
@@ -46,6 +47,10 @@ class Section:
     progression: str = ""
     numerals: List[str] = field(default_factory=list)
     text: str = ""
+    label: str = ""          # form letter (A, B, C)
+    key: str = ""            # tonic name of the section (B sections may modulate)
+    role: str = ""           # exposition | development | climax | resolution | ...
+    dynamic: float = 0.5
 
 
 @dataclass
@@ -125,6 +130,8 @@ class Composition:
     tracks: List[Track] = field(default_factory=list)
     patches: Dict[str, Dict[str, Any]] = field(default_factory=dict)
     notes_on_theory: List[str] = field(default_factory=list)
+    interpretation: Dict[str, Any] = field(default_factory=dict)
+    form: str = ""
 
     @property
     def total_beats(self) -> float:
@@ -158,6 +165,8 @@ class Composition:
             "duration_beats": round(self.total_beats, 3),
             "duration_seconds": round(self.total_seconds, 3),
             "features": self.features,
+            "form": self.form,
+            "interpretation": self.interpretation,
             "notes_on_theory": self.notes_on_theory,
             "sections": [asdict(s) for s in self.sections],
             "chords": [
@@ -171,7 +180,7 @@ class Composition:
                     "midi_channel": t.midi_channel, "level": t.level, "pan": t.pan,
                     "notes": [
                         {"start": round(n.start, 4), "duration": round(n.duration, 4), "pitch": n.pitch,
-                         "velocity": n.velocity, "lyric": n.lyric,
+                         "velocity": n.velocity, "lyric": n.lyric, "tone": n.tone,
                          "start_sec": round(tl.seconds(n.start), 4),
                          "end_sec": round(tl.seconds(n.start + n.duration), 4)}
                         for n in t.notes

@@ -23,3 +23,6 @@ include = ["poet_melody*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.setuptools.package-data]
+poet_melody = ["data/*.txt"]

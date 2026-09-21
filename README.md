@@ -23,12 +23,18 @@ pip install -e ".[audio]"          # numpy for WAV rendering (JSON/MIDI need no 
 poet-melody generate examples/moon.txt              # -> out/moon.json / .mid / .wav
 poet-melody generate letter.txt --style synthwave --key F# --mode aeolian --tempo 104
 echo "举头望明月，低头思故乡。" | poet-melody generate - --style folk --format json,midi
+poet-melody generate poem.txt --form ABA --tone-weight 5   # force a form, stricter 依字行腔
 poet-melody analyze examples/letter_zh.txt          # affect features only
+poet-melody tag letter.txt                          # print an LLM tagging prompt (any model)
+poet-melody generate letter.txt --affect tags.json  # use the model's ratings
+poet-melody generate letter.txt --llm               # rate with Claude via the anthropic SDK (pip install anthropic)
 poet-melody styles                                  # list styles
 poet-melody progressions --style jazz --key F       # the progression library, resolved to a key
 ```
 
 `python -m poet_melody ...` works without installing. Open `web/player.html` in a browser and drop the generated `.json` on it to hear the piece with Web Audio (lyrics and chords light up as they play).
+
+**手机 / 浏览器版**：`web/app.html` + `web/engine.js`（引擎的 JavaScript 移植，无需服务器）在手机上直接生成并试听；`web/engine.test.mjs` 用 node 校验它与 Python 版输出结构一致。
 
 Python API:
 
@@ -57,7 +63,7 @@ data = comp.to_dict()                # everything, incl. seconds for every note
 | `classical` / `electronic` | 月花酒江山 / thee thou… vs 霓虹 城市 信号 neon synth… | 风格选择 |
 | 结构 | 空行 = 段落 → 乐段；行 / 句 → 乐句；汉字 / 英文音节 → 音符 | 曲式与节奏 |
 
-同一文本总是得到同一首曲子（种子来自文本的 SHA-256），`--seed` 可换一个版本。
+同一文本总是得到同一首曲子（种子来自文本的 SHA-256），`--seed` 可换一个版本。词典条目带权重：否定词（不 / 没 / 无 / not / never）翻转极性，程度副词（很 / 非常 / very / so）加权 1.5；长词优先匹配（温暖 不再重复计入 暖）。`analyze(text, affect={...})` / `--affect` 可用外部（例如大模型）评分覆盖六个维度，`poet_melody.llm` 提供提示词模板与可选的 Claude 调用。
 
 ### 2. 风格 `styles.py`
 
@@ -85,15 +91,26 @@ data = comp.to_dict()                # everything, incl. seconds for every note
 * **声部连接**（`voice_lead`）：枚举声部排列，取总移动最小、无同度、不过宽的配置，pad 与 keys 都用它。
 * 调式：教会七调式、和声 / 旋律小调、Phrygian dominant、五声（宫商角徵羽）、Hirajoshi、蓝调、全音、八声音阶。
 
-### 4. 旋律 `melody.py`
+### 4. 解读 `interpret.py` — 像作曲家读歌词那样读文本
+
+* **诗体识别**：五言 / 七言 绝句 / 律诗、四行诗、十四行诗、书信（称呼—正文—告别）、自由诗。
+* **曲式**：按段落数规划 A / AB / ABA / AABA（或 ABAB）/ 回旋 ABACA…（`--form` 可强制）。同字母的段落共用和弦进行，再现的 A 段回忆首段的**头部动机**（前几个音程）；B 段有概率转到**关系大小调**（古典家族 75%，其他 35%）。
+* **情感弧线**：每段单独分析效价 / 能量 / 张力，按强度（偏向黄金分割位置）确定**高潮段**；各段得到力度值 → 所有声部力度缩放、主旋律音区升降、高潮段键盘八度加厚、称呼 / 告别段抽掉鼓与键盘（breakdown）。
+* **起承转合**：四行段落的第三行（转）在其下方替换一个色彩和弦（大调借用 iv / bVI / vi / ii，小调 IV / bII / VI / iv）并抬高音区，第四行（合）用最强终止。
+* **音画（word painting）**：升（上 / 飞 / 望 / rise / sky）→ 轮廓上行；降（落 / 沉 / 泪 / fall）→ 下行；静（静 / 眠 / still）→ 拉长时值、少装饰；流（河 / 风 / river / wind）→ 级进连奏；远（远 / 天涯 / far）→ 允许大跳；归（归 / 回 / home）→ 句尾落主音；夜（月 / 夜 / moon / night）→ 低音区更轻；光（光 / 火 / fire / sun）→ 高音区更响。
+
+### 5. 旋律 `melody.py`
 
 1. **一字一音**：汉字 = 一个音节；英文按元音组切分音节。
-2. **节奏**：每行按字数与 `arousal` 分配小节数，在八分 / 十六分网格上均匀落点后随机切分（不规则文本更多切分）；句尾音延长并留呼吸。
-3. **乐句弧线**：陈述句在黄金分割处到达高点后回落；问句尾音上扬；感叹句高起下落；省略号低回徘徊。行与行之间交替为**前乐句（开放，落在二级 / 五级）**与**后乐句（收束，落在根音 / 三音）**，即古典乐段结构。
-4. **主导动机**：每个字 / 音节由自身哈希得到一个固定的音高偏移，所以同一个词再次出现会带着相同的旋律指纹。
-5. **约束**：强拍用和弦音，弱拍用音阶音（非和弦音须级进接近）；不超过八度；跳进后反向级进"回填"；避免旋律三全音与七度；末音落主音。
+2. **节奏**：每行按字数与 `arousal` 分配小节数，在八分 / 十六分网格上均匀落点后随机切分；句尾音延长并留呼吸。
+3. **乐句弧线**：陈述句在黄金分割处到达高点后回落；问句尾音上扬；感叹句高起下落；省略号低回徘徊。
+4. **收尾方式**：开放（落二级 / 五级）、半收（和弦音但非根音）、收束（根音 / 三音）、终止（主音）。由起承转合角色、汉语句尾声调（阴平 / 阳平 = 开放，上声 / 去声 = 收束）或行的奇偶决定。
+5. **依字行腔 `tones.py`**：内置 20992 个汉字的声调表（`data/tones_4e00_9fff.txt`，由 pypinyin 生成，离线使用）。相邻两字按声调音区（阴平高、阳平中高、去声中、上声低）给出旋律方向：去声→阴平必须上行，阴平→上声必须下行，两个阳平自由；违反即"倒字"，被重罚。阳平字加下方倚音（上滑），上声字加更低的倚音，去声字加下落尾音。`--tone-weight` 调节强度，0 关闭。
+6. **声调与和声匹配**：段落末字为阴平 / 阳平（上扬、开放）→ 该段用半终止（停在属和弦）；上声 / 去声（下落、收束）→ 正格 / 变格终止；问句同样触发半终止。
+7. **主导动机**：每个字由自身哈希得到固定的音高偏移，同一个词再次出现带着相同的旋律指纹；A 段的头部动机在再现段开头被召回。
+8. **约束**：强拍用和弦音，弱拍用音阶音（非和弦音须级进接近）；不超过大六度（"远"意象放宽到八度）；跳进后反向级进回填；避免旋律三全音与七度。
 
-### 5. 音色 `synth.py`
+### 6. 音色 `synth.py`
 
 每首曲子给 pad / keys / bass / lead 各设计一个 patch（振荡器 → 滤波器 → 放大器，带包络、LFO、驱动、延迟、合唱、混响）。规则连续可微，相近的文本得到相近的声音：
 
@@ -108,7 +125,7 @@ data = comp.to_dict()                # everything, incl. seconds for every note
 Neon Supersaw: supersaw + square -1oct, unison x7 (19c); LPF 3100Hz Q 0.12 env +0.5oct (...); reverb 30% (2.6s), chorus 60%
 ```
 
-### 6. 渲染 `render.py`（需要 numpy）
+### 7. 渲染 `render.py`（需要 numpy）
 
 PolyBLEP 锯齿 / 方波、Supersaw、噪声；时变共振低通（STFT 域，无逐采样循环）；ADSR；合成脉冲响应的卷积混响；反馈延迟；合唱；侧链抽吸；软削波。合成鼓：底鼓、军鼓（synthwave 带门限混响）、拍手、踩镲、叮镲。
 
@@ -133,7 +150,7 @@ pytest
 
 ## 已知限制 / 路线图
 
-* 情感词典是小型手工词典，没有分词与语义模型；可以接入更大的词典或 LLM 打标签。
-* 汉语声调（依字行腔）尚未参与旋律走向，需要拼音 / 声调表。
+* 词典仍是手工表（每类 80–120 条），没有分词与语义模型；`--affect` / `--llm` 可接入大模型评分。
+* 声调表取每个字最常见的读音，多音字（如"行""重"）可能取错调；轻声按上下文判断尚未实现。
 * 渲染器追求可解释与零依赖而非拟真；可将 JSON 喂给任何 DAW / Tone.js / SuperCollider。
-* 尚无变奏 / 再现（ABA）曲式控制，段落间的调性对比只来自各段各自选择的进行。
+* 曲式再现只召回头部动机与和弦进行，尚无变奏（augmentation / inversion）处理。

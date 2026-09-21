@@ -19,9 +19,9 @@ def test_lead_has_one_note_per_syllable_with_lyrics():
     comp = generate(MOON, style="classical")
     lead = comp.track("lead")
     assert lead is not None
-    assert [n.lyric for n in lead.notes] == list("床前明月光疑是地上霜举头望明月低头思故乡")
+    assert [n.lyric for n in lead.notes if n.lyric] == list("床前明月光疑是地上霜举头望明月低头思故乡")
     assert all(n.duration > 0 for n in lead.notes)
-    starts = [n.start for n in lead.notes]
+    starts = [n.start for n in lead.notes if n.lyric]
     assert starts == sorted(starts)
 
 
@@ -29,11 +29,13 @@ def test_melody_respects_scale_and_leaps():
     comp = generate(MOON, style="folk")
     lead = comp.track("lead")
     tonic = comp.tonic
-    pent = {(tonic + i) % 12 for i in SCALES["major_pentatonic" if comp.mode == "ionian" else "minor_pentatonic"]}
+    from poet_melody.theory import is_major_like
+    pent = {(tonic + i) % 12 for i in SCALES["major_pentatonic" if is_major_like(comp.mode) else "minor_pentatonic"]}
     chord_pcs = {pc for c in comp.chords for pc in c.pcs}
-    for n in lead.notes:
+    sung = [n for n in lead.notes if n.lyric]
+    for n in sung:
         assert n.pitch % 12 in pent | chord_pcs
-    for a, b in zip(lead.notes, lead.notes[1:]):
+    for a, b in zip(sung, sung[1:]):
         assert abs(a.pitch - b.pitch) <= 12
 
 

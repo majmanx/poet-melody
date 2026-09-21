@@ -1,17 +1,17 @@
 {
  "title": "床前明月光，",
  "style": "folk",
- "key": "A",
- "tonic": 9,
- "mode": "ionian",
+ "key": "Eb",
+ "tonic": 3,
+ "mode": "mixolydian",
  "scale": [
-  "A",
-  "B",
-  "C#",
-  "D",
-  "E",
-  "F#",
-  "G#"
+  "Eb",
+  "F",
+  "G",
+  "Ab",
+  "Bb",
+  "C",
+  "Db"
  ],
  "bpm": 74,
  "time_signature": [
@@ -28,8 +28,8 @@
   "rit_factor": 0.65
  },
  "seed": 4059100754,
- "duration_beats": 36.0,
- "duration_seconds": 30.873,
+ "duration_beats": 36.004,
+ "duration_seconds": 30.878,
  "features": {
   "language": "zh",
   "n_chars": 28,
@@ -37,10 +37,10 @@
   "n_lines": 4,
   "n_stanzas": 1,
   "valence": 0.333,
-  "arousal": 0.139,
+  "arousal": 0.121,
   "tension": 0.25,
-  "warmth": 0.433,
-  "classical": 0.982,
+  "warmth": 0.62,
+  "classical": 0.95,
   "electronic": 0.0,
   "density": 0.312,
   "irregularity": 0.0,
@@ -54,29 +54,100 @@
    "negative": [],
    "high_arousal": [],
    "low_arousal": [
-    "月",
+    "月光",
+    "霜",
     "月"
    ],
    "tension": [],
-   "warm": [],
+   "warm": [
+    "故乡",
+    "床"
+   ],
    "cold": [
     "霜"
    ],
    "classical": [
-    "月",
-    "月",
     "明月",
-    "明月"
+    "明月",
+    "霜"
    ],
    "electronic": []
   }
  },
+ "form": "A",
+ "interpretation": {
+  "poem_form": "五言绝句",
+  "form": "A",
+  "climax_index": 0,
+  "stanzas": [
+   {
+    "index": 0,
+    "label": "A",
+    "valence": 0.333,
+    "arousal": 0.121,
+    "tension": 0.25,
+    "role": "single",
+    "dynamic": 0.636,
+    "lines": [
+     {
+      "index": 0,
+      "text": "床前明月光，",
+      "devices": [
+       "night",
+       "light"
+      ],
+      "role": "起",
+      "open_ending": null
+     },
+     {
+      "index": 1,
+      "text": "疑是地上霜。",
+      "devices": [
+       "rise"
+      ],
+      "role": "承",
+      "open_ending": null
+     },
+     {
+      "index": 2,
+      "text": "举头望明月，",
+      "devices": [
+       "rise",
+       "night"
+      ],
+      "role": "转",
+      "open_ending": null
+     },
+     {
+      "index": 3,
+      "text": "低头思故乡。",
+      "devices": [
+       "fall",
+       "home"
+      ],
+      "role": "合",
+      "open_ending": null
+     }
+    ]
+   }
+  ],
+  "notes": [
+   "Poem form: 五言绝句; musical form A (sections sharing a letter share harmony and the head motif).",
+   "Word painting: stanza 1 line 1: lower register, softer, higher register, louder; stanza 1 line 2: contour up; stanza 1 line 3: contour up, lower register, softer; stanza 1 line 4: contour down, line ends on the tonic",
+   "Four-line stanzas follow 起承转合: line 3 turns (colour chord, higher register), line 4 concludes with the strongest cadence."
+  ]
+ },
  "notes_on_theory": [
-  "Style 'folk' chosen from affect: electronic=0.00, classical=0.98, arousal=0.14, tension=0.25.",
-  "Key A ionian (major-like), 74 bpm, 3/4, swing 0.50; bright (sharp) key from warmth 0.43.",
-  "Stanza 1: folk I ii vi V in A ionian -> I ii vi V",
-  "Melody: one note per syllable (20 syllables), chord tones on strong beats, pentatonic scale, antecedent/consequent phrase endings, leitmotif signatures per syllable; range centred on MIDI 70.",
-  "Timbre from warmth 0.43 / arousal 0.14 / tension 0.25: pad = Glass Strings, keys = Zither Pluck, bass = Cello Section, lead = Bamboo Flute (full recipes under 'patches')."
+  "Style 'folk' chosen from affect: electronic=0.00, classical=0.95, arousal=0.12, tension=0.25.",
+  "Key Eb mixolydian (major-like), 74 bpm, 3/4, swing 0.50; warm (flat) key from warmth 0.62.",
+  "Poem form: 五言绝句; musical form A (sections sharing a letter share harmony and the head motif).",
+  "Word painting: stanza 1 line 1: lower register, softer, higher register, louder; stanza 1 line 2: contour up; stanza 1 line 3: contour up, lower register, softer; stanza 1 line 4: contour down, line ends on the tonic",
+  "Four-line stanzas follow 起承转合: line 3 turns (colour chord, higher register), line 4 concludes with the strongest cadence.",
+  "Stanza 1 line 3 (转) turns on a colour chord iv (Abm).",
+  "Stanza 1 [A, single, dyn 0.64]: folk I ii vi V in Eb ionian -> I ii vi V; cadence plagal; final tone 1 (open).",
+  "Head motif of section A: intervals +4, +3, +2 (recalled at the start of every later A section).",
+  "Melody: one note per syllable (20 syllables), chord tones on strong beats, pentatonic scale, phrase endings open/semi/closed/final, leitmotif signatures per syllable, 依字行腔 tone constraint weight 3 with tone ornaments; range centred on MIDI 70.",
+  "Timbre from warmth 0.62 / arousal 0.12 / tension 0.25: pad = Chamber Strings, keys = Zither Pluck, bass = Cello Section, lead = Bamboo Flute (full recipes under 'patches')."
  ],
  "sections": [
   {
@@ -92,7 +163,11 @@
     "vi",
     "V"
    ],
-   "text": ""
+   "text": "",
+   "label": "A",
+   "key": "Eb",
+   "role": "intro",
+   "dynamic": 0.5
   },
   {
    "name": "stanza 1",
@@ -107,7 +182,11 @@
     "vi",
     "V"
    ],
-   "text": "床前明月光，\n疑是地上霜。\n举头望明月，\n低头思故乡。"
+   "text": "床前明月光，\n疑是地上霜。\n举头望明月，\n低头思故乡。",
+   "label": "A",
+   "key": "Eb",
+   "role": "single",
+   "dynamic": 0.636402311412755
   },
   {
    "name": "outro",
@@ -119,245 +198,249 @@
    "numerals": [
     "I"
    ],
-   "text": ""
+   "text": "",
+   "label": "A",
+   "key": "Eb",
+   "role": "outro",
+   "dynamic": 0.4
   }
  ],
  "chords": [
   {
    "start": 0.0,
    "duration": 3,
-   "symbol": "A",
+   "symbol": "Eb",
    "numeral": "I",
-   "root": 9,
+   "root": 3,
    "quality": "maj",
    "pcs": [
-    9,
-    1,
-    4
+    3,
+    7,
+    10
    ],
    "voicing": [
-    57,
-    61,
-    64
+    63,
+    67,
+    70
    ],
-   "bass": 45,
+   "bass": 39,
    "start_sec": 0.0,
    "end_sec": 2.4324
   },
   {
    "start": 3.0,
    "duration": 3,
-   "symbol": "Bm",
+   "symbol": "Fm",
    "numeral": "ii",
-   "root": 11,
+   "root": 5,
    "quality": "min",
    "pcs": [
-    11,
-    2,
-    6
+    5,
+    8,
+    0
    ],
    "voicing": [
-    59,
-    62,
-    66
+    65,
+    68,
+    72
    ],
-   "bass": 47,
+   "bass": 41,
    "start_sec": 2.4324,
    "end_sec": 4.8649
   },
   {
    "start": 6.0,
    "duration": 3,
-   "symbol": "A",
+   "symbol": "Eb",
    "numeral": "I",
-   "root": 9,
+   "root": 3,
    "quality": "maj",
    "pcs": [
-    9,
-    1,
-    4
+    3,
+    7,
+    10
    ],
    "voicing": [
-    57,
-    61,
-    64
+    63,
+    67,
+    70
    ],
-   "bass": 45,
+   "bass": 39,
    "start_sec": 4.8649,
    "end_sec": 7.2973
   },
   {
    "start": 9.0,
    "duration": 3,
-   "symbol": "Bm",
+   "symbol": "Fm",
    "numeral": "ii",
-   "root": 11,
+   "root": 5,
    "quality": "min",
    "pcs": [
-    11,
-    2,
-    6
+    5,
+    8,
+    0
    ],
    "voicing": [
-    59,
-    62,
-    66
+    65,
+    68,
+    72
    ],
-   "bass": 47,
+   "bass": 41,
    "start_sec": 7.2973,
    "end_sec": 9.7297
   },
   {
    "start": 12.0,
    "duration": 3,
-   "symbol": "F#m",
+   "symbol": "Cm",
    "numeral": "vi",
-   "root": 6,
+   "root": 0,
    "quality": "min",
    "pcs": [
-    6,
-    9,
-    1
+    0,
+    3,
+    7
    ],
    "voicing": [
-    57,
-    61,
-    66
+    63,
+    67,
+    72
    ],
-   "bass": 42,
+   "bass": 36,
    "start_sec": 9.7297,
    "end_sec": 12.1622
   },
   {
    "start": 15.0,
    "duration": 3,
-   "symbol": "E",
+   "symbol": "Bb",
    "numeral": "V",
-   "root": 4,
+   "root": 10,
    "quality": "maj",
    "pcs": [
-    4,
-    8,
-    11
+    10,
+    2,
+    5
    ],
    "voicing": [
-    56,
-    59,
-    64
+    62,
+    65,
+    70
    ],
-   "bass": 40,
+   "bass": 46,
    "start_sec": 12.1622,
    "end_sec": 14.5946
   },
   {
    "start": 18.0,
    "duration": 3,
-   "symbol": "A",
-   "numeral": "I",
-   "root": 9,
-   "quality": "maj",
+   "symbol": "Abm",
+   "numeral": "iv*",
+   "root": 8,
+   "quality": "min",
    "pcs": [
-    9,
-    1,
-    4
+    8,
+    11,
+    3
    ],
    "voicing": [
-    57,
-    61,
-    64
+    63,
+    68,
+    71
    ],
-   "bass": 45,
+   "bass": 44,
    "start_sec": 14.5946,
    "end_sec": 17.027
   },
   {
    "start": 21.0,
    "duration": 3,
-   "symbol": "Bm",
+   "symbol": "Fm",
    "numeral": "ii",
-   "root": 11,
+   "root": 5,
    "quality": "min",
    "pcs": [
-    11,
-    2,
-    6
+    5,
+    8,
+    0
    ],
    "voicing": [
-    59,
-    62,
-    66
+    65,
+    68,
+    72
    ],
-   "bass": 47,
+   "bass": 41,
    "start_sec": 17.027,
    "end_sec": 19.4595
   },
   {
    "start": 24.0,
    "duration": 3,
-   "symbol": "F#m",
+   "symbol": "Cm",
    "numeral": "vi",
-   "root": 6,
+   "root": 0,
    "quality": "min",
    "pcs": [
-    6,
-    9,
-    1
+    0,
+    3,
+    7
    ],
    "voicing": [
-    57,
-    61,
-    66
+    63,
+    67,
+    72
    ],
-   "bass": 42,
+   "bass": 36,
    "start_sec": 19.4595,
    "end_sec": 21.8919
   },
   {
    "start": 27.0,
    "duration": 3,
-   "symbol": "E",
+   "symbol": "Bb",
    "numeral": "V",
-   "root": 4,
+   "root": 10,
    "quality": "maj",
    "pcs": [
-    4,
-    8,
-    11
+    10,
+    2,
+    5
    ],
    "voicing": [
-    56,
-    59,
-    64
+    62,
+    65,
+    70
    ],
-   "bass": 40,
+   "bass": 46,
    "start_sec": 21.8919,
    "end_sec": 24.4783
   },
   {
    "start": 30.0,
    "duration": 6,
-   "symbol": "A",
+   "symbol": "Eb",
    "numeral": "I",
-   "root": 9,
+   "root": 3,
    "quality": "maj",
    "pcs": [
-    9,
-    1,
-    4
+    3,
+    7,
+    10
    ],
    "voicing": [
-    57,
-    61,
-    64
+    63,
+    67,
+    70
    ],
-   "bass": 45,
+   "bass": 39,
    "start_sec": 24.4783,
    "end_sec": 30.8735
   }
  ],
  "patches": {
   "pad": {
-   "name": "Glass Strings",
+   "name": "Chamber Strings",
    "role": "pad",
    "oscs": [
     {
@@ -388,16 +471,16 @@
    "resonance": 0.05,
    "filter_env_amount": 0.4,
    "filter_env": {
-    "attack": 1.054,
+    "attack": 1.073,
     "decay": 1.0,
     "sustain": 0.6,
-    "release": 2.236
+    "release": 2.269
    },
    "amp_env": {
-    "attack": 0.843,
+    "attack": 0.858,
     "decay": 0.5,
     "sustain": 0.85,
-    "release": 2.236
+    "release": 2.269
    },
    "key_tracking": 0.3,
    "lfo_rate": 5.2,
@@ -408,14 +491,14 @@
    "noise": 0.0,
    "glide": 0.0,
    "reverb_mix": 0.35,
-   "reverb_size": 3.55,
+   "reverb_size": 3.582,
    "delay_time": 0.0,
    "delay_feedback": 0.3,
    "delay_mix": 0.0,
    "chorus": 0.3,
    "pan": 0.0,
    "level": 0.55,
-   "recipe": "saw -4c + saw +4c + triangle -1oct; LPF 2600Hz Q 0.05 env +0.4oct (A1.05 D1.00 S0.60 R2.24); amp A0.84 D0.50 S0.85 R2.24; LFO 5.20Hz -> pitch (5); reverb 35% (3.5s), chorus 30%"
+   "recipe": "saw -4c + saw +4c + triangle -1oct; LPF 2600Hz Q 0.05 env +0.4oct (A1.07 D1.00 S0.60 R2.27); amp A0.86 D0.50 S0.85 R2.27; LFO 5.20Hz -> pitch (5); reverb 35% (3.6s), chorus 30%"
   },
   "keys": {
    "name": "Zither Pluck",
@@ -469,14 +552,14 @@
    "noise": 0.0,
    "glide": 0.0,
    "reverb_mix": 0.3,
-   "reverb_size": 3.55,
+   "reverb_size": 3.582,
    "delay_time": 0.75,
    "delay_feedback": 0.2,
    "delay_mix": 0.12,
    "chorus": 0.0,
    "pan": 0.0,
    "level": 0.55,
-   "recipe": "triangle + saw +1oct +3c + sine; LPF 4500Hz Q 0.10 env +2.0oct (A0.00 D0.25 S0.00 R0.30); amp A0.00 D1.10 S0.00 R0.50; reverb 30% (3.5s), delay 0.75 beat fb 20% mix 12%"
+   "recipe": "triangle + saw +1oct +3c + sine; LPF 4500Hz Q 0.10 env +2.0oct (A0.00 D0.25 S0.00 R0.30); amp A0.00 D1.10 S0.00 R0.50; reverb 30% (3.6s), delay 0.75 beat fb 20% mix 12%"
   },
   "bass": {
    "name": "Cello Section",
@@ -530,14 +613,14 @@
    "noise": 0.0,
    "glide": 0.0,
    "reverb_mix": 0.2,
-   "reverb_size": 3.55,
+   "reverb_size": 3.582,
    "delay_time": 0.0,
    "delay_feedback": 0.3,
    "delay_mix": 0.0,
    "chorus": 0.0,
    "pan": 0.0,
    "level": 0.6,
-   "recipe": "saw -4c + saw +4c + sine; LPF 967Hz Q 0.05 env +0.0oct (A0.01 D0.30 S0.00 R0.30); amp A0.12 D0.30 S0.85 R0.60; LFO 5.00Hz -> pitch (4); reverb 20% (3.5s)"
+   "recipe": "saw -4c + saw +4c + sine; LPF 967Hz Q 0.05 env +0.0oct (A0.01 D0.30 S0.00 R0.30); amp A0.12 D0.30 S0.85 R0.60; LFO 5.00Hz -> pitch (4); reverb 20% (3.6s)"
   },
   "lead": {
    "name": "Bamboo Flute",
@@ -583,7 +666,7 @@
     "release": 0.3
    },
    "key_tracking": 0.3,
-   "lfo_rate": 4.822,
+   "lfo_rate": 4.794,
    "lfo_depth": 18,
    "lfo_target": "pitch",
    "lfo_delay": 0.3,
@@ -591,21 +674,21 @@
    "noise": 0.06,
    "glide": 0.03,
    "reverb_mix": 0.35,
-   "reverb_size": 3.55,
+   "reverb_size": 3.582,
    "delay_time": 0.0,
    "delay_feedback": 0.3,
    "delay_mix": 0.0,
    "chorus": 0.0,
    "pan": 0.0,
    "level": 0.7,
-   "recipe": "sine + triangle + sine +2oct; LPF 3733Hz Q 0.12 env +0.0oct (A0.01 D0.30 S0.00 R0.30); amp A0.06 D0.15 S0.85 R0.30; LFO 4.82Hz -> pitch (18); reverb 35% (3.5s)"
+   "recipe": "sine + triangle + sine +2oct; LPF 3733Hz Q 0.12 env +0.0oct (A0.01 D0.30 S0.00 R0.30); amp A0.06 D0.15 S0.85 R0.30; LFO 4.79Hz -> pitch (18); reverb 35% (3.6s)"
   }
  },
  "tracks": [
   {
    "name": "Pad",
    "role": "pad",
-   "patch": "Glass Strings",
+   "patch": "Chamber Strings",
    "midi_program": 0,
    "midi_channel": 0,
    "level": 0.55,
@@ -614,297 +697,330 @@
     {
      "start": 0.0,
      "duration": 2.95,
-     "pitch": 57,
-     "velocity": 64,
+     "pitch": 63,
+     "velocity": 63,
      "lyric": "",
+     "tone": 0,
      "start_sec": 0.0,
      "end_sec": 2.3919
     },
     {
      "start": 0.0,
      "duration": 2.95,
-     "pitch": 61,
-     "velocity": 64,
+     "pitch": 67,
+     "velocity": 63,
      "lyric": "",
+     "tone": 0,
      "start_sec": 0.0,
      "end_sec": 2.3919
     },
     {
      "start": 0.0,
      "duration": 2.95,
-     "pitch": 64,
-     "velocity": 64,
+     "pitch": 70,
+     "velocity": 63,
      "lyric": "",
+     "tone": 0,
      "start_sec": 0.0,
      "end_sec": 2.3919
     },
     {
      "start": 3.0,
      "duration": 2.95,
-     "pitch": 59,
-     "velocity": 64,
+     "pitch": 65,
+     "velocity": 63,
      "lyric": "",
+     "tone": 0,
      "start_sec": 2.4324,
      "end_sec": 4.8243
     },
     {
      "start": 3.0,
      "duration": 2.95,
-     "pitch": 62,
-     "velocity": 64,
+     "pitch": 68,
+     "velocity": 63,
      "lyric": "",
+     "tone": 0,
      "start_sec": 2.4324,
      "end_sec": 4.8243
     },
     {
      "start": 3.0,
      "duration": 2.95,
-     "pitch": 66,
-     "velocity": 64,
+     "pitch": 72,
+     "velocity": 63,
      "lyric": "",
+     "tone": 0,
      "start_sec": 2.4324,
      "end_sec": 4.8243
     },
     {
      "start": 6.0,
      "duration": 2.95,
-     "pitch": 57,
-     "velocity": 64,
+     "pitch": 63,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 4.8649,
      "end_sec": 7.2568
     },
     {
      "start": 6.0,
      "duration": 2.95,
-     "pitch": 61,
-     "velocity": 64,
+     "pitch": 67,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 4.8649,
      "end_sec": 7.2568
     },
     {
      "start": 6.0,
      "duration": 2.95,
-     "pitch": 64,
-     "velocity": 64,
+     "pitch": 70,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 4.8649,
      "end_sec": 7.2568
     },
     {
      "start": 9.0,
      "duration": 2.95,
-     "pitch": 59,
-     "velocity": 64,
+     "pitch": 65,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 7.2973,
      "end_sec": 9.6892
     },
     {
      "start": 9.0,
      "duration": 2.95,
-     "pitch": 62,
-     "velocity": 64,
+     "pitch": 68,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 7.2973,
      "end_sec": 9.6892
     },
     {
      "start": 9.0,
      "duration": 2.95,
-     "pitch": 66,
-     "velocity": 64,
+     "pitch": 72,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 7.2973,
      "end_sec": 9.6892
     },
     {
      "start": 12.0,
      "duration": 2.95,
-     "pitch": 57,
-     "velocity": 64,
+     "pitch": 63,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 9.7297,
      "end_sec": 12.1216
     },
     {
      "start": 12.0,
      "duration": 2.95,
-     "pitch": 61,
-     "velocity": 64,
+     "pitch": 67,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 9.7297,
      "end_sec": 12.1216
     },
     {
      "start": 12.0,
      "duration": 2.95,
-     "pitch": 66,
-     "velocity": 64,
+     "pitch": 72,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 9.7297,
      "end_sec": 12.1216
     },
     {
      "start": 15.0,
-     "duration": 2.95,
-     "pitch": 56,
-     "velocity": 64,
-     "lyric": "",
-     "start_sec": 12.1622,
-     "end_sec": 14.5541
-    },
-    {
-     "start": 15.0,
-     "duration": 2.95,
-     "pitch": 59,
-     "velocity": 64,
-     "lyric": "",
-     "start_sec": 12.1622,
-     "end_sec": 14.5541
-    },
-    {
-     "start": 15.0,
-     "duration": 2.95,
-     "pitch": 64,
-     "velocity": 64,
-     "lyric": "",
-     "start_sec": 12.1622,
-     "end_sec": 14.5541
-    },
-    {
-     "start": 18.0,
-     "duration": 2.95,
-     "pitch": 57,
-     "velocity": 64,
-     "lyric": "",
-     "start_sec": 14.5946,
-     "end_sec": 16.9865
-    },
-    {
-     "start": 18.0,
-     "duration": 2.95,
-     "pitch": 61,
-     "velocity": 64,
-     "lyric": "",
-     "start_sec": 14.5946,
-     "end_sec": 16.9865
-    },
-    {
-     "start": 18.0,
-     "duration": 2.95,
-     "pitch": 64,
-     "velocity": 64,
-     "lyric": "",
-     "start_sec": 14.5946,
-     "end_sec": 16.9865
-    },
-    {
-     "start": 21.0,
-     "duration": 2.95,
-     "pitch": 59,
-     "velocity": 64,
-     "lyric": "",
-     "start_sec": 17.027,
-     "end_sec": 19.4189
-    },
-    {
-     "start": 21.0,
      "duration": 2.95,
      "pitch": 62,
-     "velocity": 64,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
+     "start_sec": 12.1622,
+     "end_sec": 14.5541
+    },
+    {
+     "start": 15.0,
+     "duration": 2.95,
+     "pitch": 65,
+     "velocity": 58,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 12.1622,
+     "end_sec": 14.5541
+    },
+    {
+     "start": 15.0,
+     "duration": 2.95,
+     "pitch": 70,
+     "velocity": 58,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 12.1622,
+     "end_sec": 14.5541
+    },
+    {
+     "start": 18.0,
+     "duration": 2.95,
+     "pitch": 63,
+     "velocity": 58,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 14.5946,
+     "end_sec": 16.9865
+    },
+    {
+     "start": 18.0,
+     "duration": 2.95,
+     "pitch": 68,
+     "velocity": 58,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 14.5946,
+     "end_sec": 16.9865
+    },
+    {
+     "start": 18.0,
+     "duration": 2.95,
+     "pitch": 71,
+     "velocity": 58,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 14.5946,
+     "end_sec": 16.9865
+    },
+    {
+     "start": 21.0,
+     "duration": 2.95,
+     "pitch": 65,
+     "velocity": 58,
+     "lyric": "",
+     "tone": 0,
      "start_sec": 17.027,
      "end_sec": 19.4189
     },
     {
      "start": 21.0,
      "duration": 2.95,
-     "pitch": 66,
-     "velocity": 64,
+     "pitch": 68,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
+     "start_sec": 17.027,
+     "end_sec": 19.4189
+    },
+    {
+     "start": 21.0,
+     "duration": 2.95,
+     "pitch": 72,
+     "velocity": 58,
+     "lyric": "",
+     "tone": 0,
      "start_sec": 17.027,
      "end_sec": 19.4189
     },
     {
      "start": 24.0,
      "duration": 2.95,
-     "pitch": 57,
-     "velocity": 64,
+     "pitch": 63,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 19.4595,
      "end_sec": 21.8514
     },
     {
      "start": 24.0,
      "duration": 2.95,
-     "pitch": 61,
-     "velocity": 64,
+     "pitch": 67,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 19.4595,
      "end_sec": 21.8514
     },
     {
      "start": 24.0,
      "duration": 2.95,
-     "pitch": 66,
-     "velocity": 64,
+     "pitch": 72,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 19.4595,
      "end_sec": 21.8514
     },
     {
      "start": 27.0,
      "duration": 2.95,
-     "pitch": 56,
-     "velocity": 64,
+     "pitch": 62,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 21.8919,
      "end_sec": 24.4325
     },
     {
      "start": 27.0,
      "duration": 2.95,
-     "pitch": 59,
-     "velocity": 64,
+     "pitch": 65,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 21.8919,
      "end_sec": 24.4325
     },
     {
      "start": 27.0,
      "duration": 2.95,
-     "pitch": 64,
-     "velocity": 64,
+     "pitch": 70,
+     "velocity": 58,
      "lyric": "",
+     "tone": 0,
      "start_sec": 21.8919,
      "end_sec": 24.4325
     },
     {
      "start": 30.0,
      "duration": 5.95,
-     "pitch": 57,
-     "velocity": 64,
+     "pitch": 63,
+     "velocity": 63,
      "lyric": "",
+     "tone": 0,
      "start_sec": 24.4783,
      "end_sec": 30.8112
     },
     {
      "start": 30.0,
      "duration": 5.95,
-     "pitch": 61,
-     "velocity": 64,
+     "pitch": 67,
+     "velocity": 63,
      "lyric": "",
+     "tone": 0,
      "start_sec": 24.4783,
      "end_sec": 30.8112
     },
     {
      "start": 30.0,
      "duration": 5.95,
-     "pitch": 64,
-     "velocity": 64,
+     "pitch": 70,
+     "velocity": 63,
      "lyric": "",
+     "tone": 0,
      "start_sec": 24.4783,
      "end_sec": 30.8112
     }
@@ -920,436 +1036,484 @@
    "pan": -0.25,
    "notes": [
     {
-     "start": 6.0062,
+     "start": 5.9786,
      "duration": 0.55,
-     "pitch": 45,
-     "velocity": 62,
-     "lyric": "",
-     "start_sec": 4.8699,
-     "end_sec": 5.3158
-    },
-    {
-     "start": 6.4904,
-     "duration": 0.55,
-     "pitch": 57,
+     "pitch": 51,
      "velocity": 56,
      "lyric": "",
-     "start_sec": 5.2625,
-     "end_sec": 5.7084
+     "tone": 0,
+     "start_sec": 4.8476,
+     "end_sec": 5.2935
     },
     {
-     "start": 6.9877,
+     "start": 6.5248,
      "duration": 0.55,
-     "pitch": 61,
+     "pitch": 63,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 5.2904,
+     "end_sec": 5.7364
+    },
+    {
+     "start": 7.0269,
+     "duration": 0.55,
+     "pitch": 67,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 5.6975,
+     "end_sec": 6.1434
+    },
+    {
+     "start": 7.5386,
+     "duration": 0.55,
+     "pitch": 70,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 6.1124,
+     "end_sec": 6.5583
+    },
+    {
+     "start": 8.0135,
+     "duration": 0.55,
+     "pitch": 75,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 6.4974,
+     "end_sec": 6.9434
+    },
+    {
+     "start": 8.5093,
+     "duration": 0.55,
+     "pitch": 51,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 6.8994,
+     "end_sec": 7.3454
+    },
+    {
+     "start": 9.0219,
+     "duration": 0.55,
+     "pitch": 53,
      "velocity": 56,
      "lyric": "",
-     "start_sec": 5.6657,
-     "end_sec": 6.1117
+     "tone": 0,
+     "start_sec": 7.3151,
+     "end_sec": 7.761
     },
     {
-     "start": 7.5092,
+     "start": 9.5105,
      "duration": 0.55,
-     "pitch": 64,
-     "velocity": 56,
+     "pitch": 65,
+     "velocity": 50,
      "lyric": "",
-     "start_sec": 6.0885,
-     "end_sec": 6.5345
+     "tone": 0,
+     "start_sec": 7.7113,
+     "end_sec": 8.1572
     },
     {
-     "start": 7.9936,
-     "duration": 0.55,
-     "pitch": 69,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 6.4813,
-     "end_sec": 6.9272
-    },
-    {
-     "start": 8.497,
-     "duration": 0.55,
-     "pitch": 45,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 6.8894,
-     "end_sec": 7.3354
-    },
-    {
-     "start": 8.9973,
-     "duration": 0.55,
-     "pitch": 47,
-     "velocity": 62,
-     "lyric": "",
-     "start_sec": 7.2951,
-     "end_sec": 7.741
-    },
-    {
-     "start": 9.4959,
-     "duration": 0.55,
-     "pitch": 59,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 7.6994,
-     "end_sec": 8.1454
-    },
-    {
-     "start": 9.9667,
-     "duration": 0.55,
-     "pitch": 62,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 8.0811,
-     "end_sec": 8.5271
-    },
-    {
-     "start": 10.4703,
-     "duration": 0.55,
-     "pitch": 66,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 8.4895,
-     "end_sec": 8.9354
-    },
-    {
-     "start": 10.9792,
-     "duration": 0.55,
-     "pitch": 71,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 8.902,
-     "end_sec": 9.348
-    },
-    {
-     "start": 11.4851,
-     "duration": 0.55,
-     "pitch": 47,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 9.3123,
-     "end_sec": 9.7582
-    },
-    {
-     "start": 12.0151,
-     "duration": 0.55,
-     "pitch": 45,
-     "velocity": 62,
-     "lyric": "",
-     "start_sec": 9.742,
-     "end_sec": 10.1879
-    },
-    {
-     "start": 12.5096,
-     "duration": 0.55,
-     "pitch": 57,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 10.1429,
-     "end_sec": 10.5888
-    },
-    {
-     "start": 12.9907,
-     "duration": 0.55,
-     "pitch": 61,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 10.533,
-     "end_sec": 10.9789
-    },
-    {
-     "start": 13.5129,
-     "duration": 0.55,
-     "pitch": 66,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 10.9564,
-     "end_sec": 11.4023
-    },
-    {
-     "start": 13.9977,
-     "duration": 0.55,
-     "pitch": 69,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 11.3495,
-     "end_sec": 11.7954
-    },
-    {
-     "start": 14.5077,
-     "duration": 0.55,
-     "pitch": 45,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 11.763,
-     "end_sec": 12.2089
-    },
-    {
-     "start": 15.0139,
-     "duration": 0.55,
-     "pitch": 44,
-     "velocity": 62,
-     "lyric": "",
-     "start_sec": 12.1735,
-     "end_sec": 12.6194
-    },
-    {
-     "start": 15.4978,
-     "duration": 0.55,
-     "pitch": 56,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 12.5658,
-     "end_sec": 13.0117
-    },
-    {
-     "start": 16.0019,
-     "duration": 0.55,
-     "pitch": 59,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 12.9745,
-     "end_sec": 13.4205
-    },
-    {
-     "start": 16.4878,
-     "duration": 0.55,
-     "pitch": 64,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 13.3685,
-     "end_sec": 13.8145
-    },
-    {
-     "start": 16.9959,
+     "start": 10.0092,
      "duration": 0.55,
      "pitch": 68,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 8.1156,
+     "end_sec": 8.5615
+    },
+    {
+     "start": 10.5237,
+     "duration": 0.55,
+     "pitch": 72,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 8.5327,
+     "end_sec": 8.9787
+    },
+    {
+     "start": 10.9847,
+     "duration": 0.55,
+     "pitch": 77,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 8.9065,
+     "end_sec": 9.3524
+    },
+    {
+     "start": 11.4773,
+     "duration": 0.55,
+     "pitch": 53,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 9.3059,
+     "end_sec": 9.7519
+    },
+    {
+     "start": 11.9839,
+     "duration": 0.55,
+     "pitch": 51,
      "velocity": 56,
      "lyric": "",
-     "start_sec": 13.7805,
-     "end_sec": 14.2264
+     "tone": 0,
+     "start_sec": 9.7167,
+     "end_sec": 10.1627
     },
     {
-     "start": 17.5232,
+     "start": 12.4877,
      "duration": 0.55,
-     "pitch": 44,
+     "pitch": 63,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 10.1252,
+     "end_sec": 10.5711
+    },
+    {
+     "start": 12.9994,
+     "duration": 0.55,
+     "pitch": 67,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 10.54,
+     "end_sec": 10.986
+    },
+    {
+     "start": 13.4815,
+     "duration": 0.55,
+     "pitch": 72,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 10.931,
+     "end_sec": 11.3769
+    },
+    {
+     "start": 13.9959,
+     "duration": 0.55,
+     "pitch": 75,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 11.348,
+     "end_sec": 11.794
+    },
+    {
+     "start": 14.4892,
+     "duration": 0.55,
+     "pitch": 51,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 11.748,
+     "end_sec": 12.194
+    },
+    {
+     "start": 14.9854,
+     "duration": 0.55,
+     "pitch": 50,
      "velocity": 56,
      "lyric": "",
-     "start_sec": 14.208,
-     "end_sec": 14.654
+     "tone": 0,
+     "start_sec": 12.1503,
+     "end_sec": 12.5962
     },
     {
-     "start": 18.0054,
-     "duration": 0.55,
-     "pitch": 45,
-     "velocity": 62,
-     "lyric": "",
-     "start_sec": 14.599,
-     "end_sec": 15.0449
-    },
-    {
-     "start": 18.4782,
-     "duration": 0.55,
-     "pitch": 57,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 14.9823,
-     "end_sec": 15.4283
-    },
-    {
-     "start": 18.9914,
-     "duration": 0.55,
-     "pitch": 61,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 15.3985,
-     "end_sec": 15.8444
-    },
-    {
-     "start": 19.4966,
-     "duration": 0.55,
-     "pitch": 64,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 15.8081,
-     "end_sec": 16.254
-    },
-    {
-     "start": 19.9835,
-     "duration": 0.55,
-     "pitch": 69,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 16.2029,
-     "end_sec": 16.6488
-    },
-    {
-     "start": 20.551,
-     "duration": 0.55,
-     "pitch": 45,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 16.663,
-     "end_sec": 17.1089
-    },
-    {
-     "start": 20.9653,
-     "duration": 0.55,
-     "pitch": 47,
-     "velocity": 62,
-     "lyric": "",
-     "start_sec": 16.9989,
-     "end_sec": 17.4449
-    },
-    {
-     "start": 21.5088,
-     "duration": 0.55,
-     "pitch": 59,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 17.4395,
-     "end_sec": 17.8855
-    },
-    {
-     "start": 22.0181,
+     "start": 15.5242,
      "duration": 0.55,
      "pitch": 62,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 12.5872,
+     "end_sec": 13.0332
+    },
+    {
+     "start": 15.9584,
+     "duration": 0.55,
+     "pitch": 65,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 12.9393,
+     "end_sec": 13.3852
+    },
+    {
+     "start": 16.5084,
+     "duration": 0.55,
+     "pitch": 70,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 13.3852,
+     "end_sec": 13.8312
+    },
+    {
+     "start": 17.0176,
+     "duration": 0.55,
+     "pitch": 74,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 13.7981,
+     "end_sec": 14.244
+    },
+    {
+     "start": 17.4972,
+     "duration": 0.55,
+     "pitch": 50,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 14.1869,
+     "end_sec": 14.6328
+    },
+    {
+     "start": 18.0329,
+     "duration": 0.55,
+     "pitch": 51,
      "velocity": 56,
      "lyric": "",
-     "start_sec": 17.8525,
-     "end_sec": 18.2985
+     "tone": 0,
+     "start_sec": 14.6213,
+     "end_sec": 15.0672
     },
     {
-     "start": 22.5058,
+     "start": 18.5203,
      "duration": 0.55,
-     "pitch": 66,
-     "velocity": 56,
+     "pitch": 63,
+     "velocity": 50,
      "lyric": "",
-     "start_sec": 18.2479,
-     "end_sec": 18.6939
+     "tone": 0,
+     "start_sec": 15.0165,
+     "end_sec": 15.4624
     },
     {
-     "start": 23.0074,
-     "duration": 0.55,
-     "pitch": 71,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 18.6546,
-     "end_sec": 19.1006
-    },
-    {
-     "start": 23.5172,
-     "duration": 0.55,
-     "pitch": 47,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 19.068,
-     "end_sec": 19.5139
-    },
-    {
-     "start": 23.973,
-     "duration": 0.55,
-     "pitch": 45,
-     "velocity": 62,
-     "lyric": "",
-     "start_sec": 19.4376,
-     "end_sec": 19.8835
-    },
-    {
-     "start": 24.4794,
-     "duration": 0.55,
-     "pitch": 57,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 19.8481,
-     "end_sec": 20.2941
-    },
-    {
-     "start": 24.9784,
-     "duration": 0.55,
-     "pitch": 61,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 20.2528,
-     "end_sec": 20.6987
-    },
-    {
-     "start": 25.5106,
-     "duration": 0.55,
-     "pitch": 66,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 20.6843,
-     "end_sec": 21.1302
-    },
-    {
-     "start": 25.9662,
-     "duration": 0.55,
-     "pitch": 69,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 21.0536,
-     "end_sec": 21.4996
-    },
-    {
-     "start": 26.5126,
-     "duration": 0.55,
-     "pitch": 45,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 21.4967,
-     "end_sec": 21.9427
-    },
-    {
-     "start": 27.0341,
-     "duration": 0.55,
-     "pitch": 44,
-     "velocity": 62,
-     "lyric": "",
-     "start_sec": 21.9196,
-     "end_sec": 22.371
-    },
-    {
-     "start": 27.523,
-     "duration": 0.55,
-     "pitch": 56,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 22.3203,
-     "end_sec": 22.7805
-    },
-    {
-     "start": 28.022,
-     "duration": 0.55,
-     "pitch": 59,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 22.7374,
-     "end_sec": 23.2071
-    },
-    {
-     "start": 28.499,
-     "duration": 0.55,
-     "pitch": 64,
-     "velocity": 56,
-     "lyric": "",
-     "start_sec": 23.1441,
-     "end_sec": 23.6232
-    },
-    {
-     "start": 29.0093,
+     "start": 18.9983,
      "duration": 0.55,
      "pitch": 68,
-     "velocity": 56,
+     "velocity": 50,
      "lyric": "",
-     "start_sec": 23.5882,
-     "end_sec": 24.0776
+     "tone": 0,
+     "start_sec": 15.404,
+     "end_sec": 15.8499
     },
     {
-     "start": 29.4968,
+     "start": 19.5249,
      "duration": 0.55,
-     "pitch": 44,
+     "pitch": 71,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 15.831,
+     "end_sec": 16.277
+    },
+    {
+     "start": 19.991,
+     "duration": 0.55,
+     "pitch": 75,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 16.2089,
+     "end_sec": 16.6549
+    },
+    {
+     "start": 20.5128,
+     "duration": 0.55,
+     "pitch": 51,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 16.632,
+     "end_sec": 17.078
+    },
+    {
+     "start": 20.994,
+     "duration": 0.55,
+     "pitch": 53,
      "velocity": 56,
      "lyric": "",
-     "start_sec": 24.0214,
-     "end_sec": 24.5213
+     "tone": 0,
+     "start_sec": 17.0222,
+     "end_sec": 17.4681
+    },
+    {
+     "start": 21.5283,
+     "duration": 0.55,
+     "pitch": 65,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 17.4554,
+     "end_sec": 17.9013
+    },
+    {
+     "start": 21.9982,
+     "duration": 0.55,
+     "pitch": 68,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 17.8363,
+     "end_sec": 18.2823
+    },
+    {
+     "start": 22.5203,
+     "duration": 0.55,
+     "pitch": 72,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 18.2597,
+     "end_sec": 18.7056
+    },
+    {
+     "start": 23.0235,
+     "duration": 0.55,
+     "pitch": 77,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 18.6677,
+     "end_sec": 19.1136
+    },
+    {
+     "start": 23.4826,
+     "duration": 0.55,
+     "pitch": 53,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 19.04,
+     "end_sec": 19.4859
+    },
+    {
+     "start": 23.9965,
+     "duration": 0.55,
+     "pitch": 51,
+     "velocity": 56,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 19.4567,
+     "end_sec": 19.9026
+    },
+    {
+     "start": 24.4905,
+     "duration": 0.55,
+     "pitch": 63,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 19.8571,
+     "end_sec": 20.3031
+    },
+    {
+     "start": 24.981,
+     "duration": 0.55,
+     "pitch": 67,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 20.2549,
+     "end_sec": 20.7008
+    },
+    {
+     "start": 25.5047,
+     "duration": 0.55,
+     "pitch": 72,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 20.6795,
+     "end_sec": 21.1254
+    },
+    {
+     "start": 25.9576,
+     "duration": 0.55,
+     "pitch": 75,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 21.0467,
+     "end_sec": 21.4927
+    },
+    {
+     "start": 26.4878,
+     "duration": 0.55,
+     "pitch": 51,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 21.4766,
+     "end_sec": 21.9226
+    },
+    {
+     "start": 27.0069,
+     "duration": 0.55,
+     "pitch": 50,
+     "velocity": 56,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 21.8975,
+     "end_sec": 22.3484
+    },
+    {
+     "start": 27.494,
+     "duration": 0.55,
+     "pitch": 62,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 22.2963,
+     "end_sec": 22.756
+    },
+    {
+     "start": 28.0246,
+     "duration": 0.55,
+     "pitch": 65,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 22.7396,
+     "end_sec": 23.2094
+    },
+    {
+     "start": 28.5284,
+     "duration": 0.55,
+     "pitch": 70,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 23.1695,
+     "end_sec": 23.6491
+    },
+    {
+     "start": 28.9794,
+     "duration": 0.55,
+     "pitch": 74,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 23.5619,
+     "end_sec": 24.0507
+    },
+    {
+     "start": 29.4721,
+     "duration": 0.55,
+     "pitch": 50,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 0,
+     "start_sec": 23.9993,
+     "end_sec": 24.4986
     }
    ]
   },
@@ -1363,193 +1527,214 @@
    "pan": 0.0,
    "notes": [
     {
-     "start": 0.0,
+     "start": 0.0012,
      "duration": 1.5,
-     "pitch": 45,
-     "velocity": 74,
+     "pitch": 39,
+     "velocity": 73,
      "lyric": "",
-     "start_sec": 0.0,
-     "end_sec": 1.2162
+     "tone": 0,
+     "start_sec": 0.001,
+     "end_sec": 1.2172
     },
     {
-     "start": 1.9951,
+     "start": 1.995,
      "duration": 1.0,
-     "pitch": 52,
-     "velocity": 64,
+     "pitch": 46,
+     "velocity": 63,
      "lyric": "",
+     "tone": 0,
      "start_sec": 1.6176,
      "end_sec": 2.4284
     },
     {
-     "start": 2.9781,
+     "start": 2.9779,
      "duration": 1.5,
-     "pitch": 47,
-     "velocity": 74,
+     "pitch": 41,
+     "velocity": 73,
      "lyric": "",
-     "start_sec": 2.4147,
-     "end_sec": 3.6309
+     "tone": 0,
+     "start_sec": 2.4145,
+     "end_sec": 3.6307
     },
     {
-     "start": 4.9997,
+     "start": 4.9923,
      "duration": 1.0,
-     "pitch": 54,
-     "velocity": 64,
+     "pitch": 48,
+     "velocity": 63,
      "lyric": "",
-     "start_sec": 4.0538,
-     "end_sec": 4.8646
+     "tone": 0,
+     "start_sec": 4.0478,
+     "end_sec": 4.8586
     },
     {
-     "start": 5.9852,
+     "start": 5.9781,
      "duration": 1.5,
-     "pitch": 45,
-     "velocity": 74,
+     "pitch": 39,
+     "velocity": 67,
      "lyric": "",
-     "start_sec": 4.8528,
-     "end_sec": 6.069
+     "tone": 0,
+     "start_sec": 4.8471,
+     "end_sec": 6.0633
     },
     {
-     "start": 8.027,
+     "start": 8.0258,
      "duration": 1.0,
-     "pitch": 52,
-     "velocity": 64,
+     "pitch": 46,
+     "velocity": 58,
      "lyric": "",
-     "start_sec": 6.5084,
-     "end_sec": 7.3192
+     "tone": 0,
+     "start_sec": 6.5074,
+     "end_sec": 7.3182
     },
     {
-     "start": 9.0368,
+     "start": 9.007,
      "duration": 1.5,
-     "pitch": 47,
-     "velocity": 74,
+     "pitch": 41,
+     "velocity": 67,
      "lyric": "",
-     "start_sec": 7.3271,
-     "end_sec": 8.5433
+     "tone": 0,
+     "start_sec": 7.303,
+     "end_sec": 8.5192
     },
     {
-     "start": 10.9848,
+     "start": 11.0131,
      "duration": 1.0,
-     "pitch": 54,
-     "velocity": 64,
+     "pitch": 48,
+     "velocity": 58,
      "lyric": "",
-     "start_sec": 8.9066,
-     "end_sec": 9.7174
+     "tone": 0,
+     "start_sec": 8.9296,
+     "end_sec": 9.7404
     },
     {
-     "start": 12.0234,
+     "start": 12.0178,
      "duration": 1.5,
-     "pitch": 42,
-     "velocity": 74,
+     "pitch": 36,
+     "velocity": 67,
      "lyric": "",
-     "start_sec": 9.7487,
-     "end_sec": 10.9649
+     "tone": 0,
+     "start_sec": 9.7442,
+     "end_sec": 10.9604
     },
     {
-     "start": 13.9477,
+     "start": 14.0143,
      "duration": 1.0,
-     "pitch": 49,
-     "velocity": 64,
+     "pitch": 43,
+     "velocity": 58,
      "lyric": "",
-     "start_sec": 11.309,
-     "end_sec": 12.1198
+     "tone": 0,
+     "start_sec": 11.363,
+     "end_sec": 12.1738
     },
     {
-     "start": 14.9916,
+     "start": 14.957,
      "duration": 1.5,
-     "pitch": 40,
-     "velocity": 74,
+     "pitch": 46,
+     "velocity": 67,
      "lyric": "",
-     "start_sec": 12.1553,
-     "end_sec": 13.3716
+     "tone": 0,
+     "start_sec": 12.1273,
+     "end_sec": 13.3435
     },
     {
-     "start": 17.0379,
+     "start": 16.9872,
      "duration": 1.0,
-     "pitch": 47,
-     "velocity": 64,
+     "pitch": 53,
+     "velocity": 58,
      "lyric": "",
-     "start_sec": 13.8145,
-     "end_sec": 14.6253
+     "tone": 0,
+     "start_sec": 13.7734,
+     "end_sec": 14.5842
     },
     {
-     "start": 17.9873,
+     "start": 17.9757,
      "duration": 1.5,
-     "pitch": 45,
-     "velocity": 74,
+     "pitch": 44,
+     "velocity": 67,
      "lyric": "",
-     "start_sec": 14.5843,
-     "end_sec": 15.8005
+     "tone": 0,
+     "start_sec": 14.5749,
+     "end_sec": 15.7911
     },
     {
-     "start": 20.0187,
+     "start": 20.0053,
      "duration": 1.0,
-     "pitch": 52,
-     "velocity": 64,
+     "pitch": 51,
+     "velocity": 58,
      "lyric": "",
-     "start_sec": 16.2314,
-     "end_sec": 17.0422
+     "tone": 0,
+     "start_sec": 16.2205,
+     "end_sec": 17.0313
     },
     {
-     "start": 20.9909,
+     "start": 20.9787,
      "duration": 1.5,
-     "pitch": 47,
-     "velocity": 74,
+     "pitch": 41,
+     "velocity": 67,
      "lyric": "",
-     "start_sec": 17.0196,
-     "end_sec": 18.2358
+     "tone": 0,
+     "start_sec": 17.0098,
+     "end_sec": 18.226
     },
     {
-     "start": 23.0037,
+     "start": 23.0254,
      "duration": 1.0,
-     "pitch": 54,
-     "velocity": 64,
+     "pitch": 48,
+     "velocity": 58,
      "lyric": "",
-     "start_sec": 18.6516,
-     "end_sec": 19.4624
+     "tone": 0,
+     "start_sec": 18.6693,
+     "end_sec": 19.4801
     },
     {
-     "start": 23.9781,
+     "start": 23.9916,
      "duration": 1.5,
-     "pitch": 42,
-     "velocity": 74,
+     "pitch": 36,
+     "velocity": 67,
      "lyric": "",
-     "start_sec": 19.4417,
-     "end_sec": 20.6579
+     "tone": 0,
+     "start_sec": 19.4526,
+     "end_sec": 20.6689
     },
     {
-     "start": 25.9672,
+     "start": 25.9731,
      "duration": 1.0,
-     "pitch": 49,
-     "velocity": 64,
+     "pitch": 43,
+     "velocity": 58,
      "lyric": "",
-     "start_sec": 21.0545,
-     "end_sec": 21.8653
+     "tone": 0,
+     "start_sec": 21.0593,
+     "end_sec": 21.8701
     },
     {
-     "start": 27.0107,
+     "start": 26.9949,
      "duration": 1.5,
-     "pitch": 40,
-     "velocity": 74,
+     "pitch": 46,
+     "velocity": 67,
      "lyric": "",
-     "start_sec": 21.9005,
-     "end_sec": 23.1542
+     "tone": 0,
+     "start_sec": 21.8878,
+     "end_sec": 23.1406
     },
     {
-     "start": 29.0115,
+     "start": 29.0174,
      "duration": 1.0,
-     "pitch": 47,
-     "velocity": 64,
+     "pitch": 53,
+     "velocity": 58,
      "lyric": "",
-     "start_sec": 23.5902,
-     "end_sec": 24.4889
+     "tone": 0,
+     "start_sec": 23.5953,
+     "end_sec": 24.4943
     },
     {
-     "start": 29.9931,
+     "start": 30.0036,
      "duration": 6,
-     "pitch": 45,
+     "pitch": 39,
      "velocity": 80,
      "lyric": "",
-     "start_sec": 24.472,
-     "end_sec": 30.8649
+     "tone": 0,
+     "start_sec": 24.4816,
+     "end_sec": 30.878
     }
    ]
   },
@@ -1563,184 +1748,284 @@
    "pan": 0.1,
    "notes": [
     {
-     "start": 6.0173,
-     "duration": 1.0,
-     "pitch": 64,
-     "velocity": 77,
+     "start": 5.9955,
+     "duration": 0.25,
+     "pitch": 60,
+     "velocity": 57,
+     "lyric": "",
+     "tone": 2,
+     "start_sec": 4.8612,
+     "end_sec": 5.0639
+    },
+    {
+     "start": 6.2568,
+     "duration": 0.75,
+     "pitch": 63,
+     "velocity": 71,
      "lyric": "床",
-     "start_sec": 4.8789,
-     "end_sec": 5.6897
+     "tone": 2,
+     "start_sec": 5.0731,
+     "end_sec": 5.6812
     },
     {
-     "start": 7.0262,
-     "duration": 1.0,
-     "pitch": 69,
-     "velocity": 68,
-     "lyric": "前",
-     "start_sec": 5.6969,
-     "end_sec": 6.5077
+     "start": 7.0051,
+     "duration": 0.25,
+     "pitch": 65,
+     "velocity": 59,
+     "lyric": "",
+     "tone": 2,
+     "start_sec": 5.6798,
+     "end_sec": 5.8825
     },
     {
-     "start": 7.9874,
-     "duration": 1.0,
-     "pitch": 73,
-     "velocity": 72,
-     "lyric": "明",
-     "start_sec": 6.4763,
-     "end_sec": 7.2871
-    },
-    {
-     "start": 8.9899,
-     "duration": 1.0,
-     "pitch": 71,
-     "velocity": 80,
-     "lyric": "月",
-     "start_sec": 7.2891,
-     "end_sec": 8.0999
-    },
-    {
-     "start": 10.025,
-     "duration": 1.0,
-     "pitch": 66,
-     "velocity": 62,
-     "lyric": "光",
-     "start_sec": 8.1284,
-     "end_sec": 8.9392
-    },
-    {
-     "start": 11.9761,
-     "duration": 1.0,
-     "pitch": 69,
-     "velocity": 75,
-     "lyric": "疑",
-     "start_sec": 9.7104,
-     "end_sec": 10.5212
-    },
-    {
-     "start": 13.0201,
-     "duration": 1.0,
-     "pitch": 73,
-     "velocity": 69,
-     "lyric": "是",
-     "start_sec": 10.5568,
-     "end_sec": 11.3676
-    },
-    {
-     "start": 14.0058,
-     "duration": 1.0,
-     "pitch": 73,
-     "velocity": 69,
-     "lyric": "地",
-     "start_sec": 11.3561,
-     "end_sec": 12.1669
-    },
-    {
-     "start": 15.0065,
-     "duration": 1.0,
-     "pitch": 76,
-     "velocity": 77,
-     "lyric": "上",
-     "start_sec": 12.1674,
-     "end_sec": 12.9782
-    },
-    {
-     "start": 16.0077,
-     "duration": 1.0,
-     "pitch": 76,
+     "start": 7.2152,
+     "duration": 0.75,
+     "pitch": 67,
      "velocity": 73,
-     "lyric": "霜",
-     "start_sec": 12.9792,
-     "end_sec": 13.79
+     "lyric": "前",
+     "tone": 2,
+     "start_sec": 5.8502,
+     "end_sec": 6.4583
     },
     {
-     "start": 18.0066,
+     "start": 8.0159,
+     "duration": 0.25,
+     "pitch": 67,
+     "velocity": 55,
+     "lyric": "",
+     "tone": 2,
+     "start_sec": 6.4994,
+     "end_sec": 6.7021
+    },
+    {
+     "start": 8.2825,
+     "duration": 0.75,
+     "pitch": 70,
+     "velocity": 69,
+     "lyric": "明",
+     "tone": 2,
+     "start_sec": 6.7156,
+     "end_sec": 7.3237
+    },
+    {
+     "start": 8.9873,
      "duration": 1.0,
-     "pitch": 69,
-     "velocity": 70,
-     "lyric": "举",
-     "start_sec": 14.6,
-     "end_sec": 15.4108
+     "pitch": 72,
+     "velocity": 78,
+     "lyric": "月",
+     "tone": 4,
+     "start_sec": 7.287,
+     "end_sec": 8.0978
     },
     {
-     "start": 18.9841,
-     "duration": 1.5,
-     "pitch": 73,
-     "velocity": 75,
-     "lyric": "头",
-     "start_sec": 15.3925,
-     "end_sec": 16.6087
+     "start": 10.0066,
+     "duration": 1.0,
+     "pitch": 65,
+     "velocity": 66,
+     "lyric": "光",
+     "tone": 1,
+     "start_sec": 8.1135,
+     "end_sec": 8.9243
     },
     {
-     "start": 20.5392,
-     "duration": 0.5,
-     "pitch": 76,
-     "velocity": 72,
-     "lyric": "望",
-     "start_sec": 16.6534,
-     "end_sec": 17.0588
+     "start": 12.0158,
+     "duration": 1.0,
+     "pitch": 63,
+     "velocity": 71,
+     "lyric": "疑",
+     "tone": 2,
+     "start_sec": 9.7426,
+     "end_sec": 10.5534
     },
     {
-     "start": 20.9671,
+     "start": 13.0236,
+     "duration": 0.75,
+     "pitch": 67,
+     "velocity": 67,
+     "lyric": "是",
+     "tone": 4,
+     "start_sec": 10.5597,
+     "end_sec": 11.1678
+    },
+    {
+     "start": 13.7419,
+     "duration": 0.25,
+     "pitch": 65,
+     "velocity": 49,
+     "lyric": "",
+     "tone": 4,
+     "start_sec": 11.1421,
+     "end_sec": 11.3448
+    },
+    {
+     "start": 14.0027,
+     "duration": 1.0,
+     "pitch": 72,
+     "velocity": 73,
+     "lyric": "地",
+     "tone": 4,
+     "start_sec": 11.3535,
+     "end_sec": 12.1643
+    },
+    {
+     "start": 14.9725,
+     "duration": 1.0,
+     "pitch": 70,
+     "velocity": 82,
+     "lyric": "上",
+     "tone": 4,
+     "start_sec": 12.1399,
+     "end_sec": 12.9507
+    },
+    {
+     "start": 16.0297,
      "duration": 1.0,
      "pitch": 74,
-     "velocity": 83,
-     "lyric": "明",
-     "start_sec": 17.0004,
-     "end_sec": 17.8112
-    },
-    {
-     "start": 21.9829,
-     "duration": 1.0,
-     "pitch": 71,
-     "velocity": 65,
-     "lyric": "月",
-     "start_sec": 17.824,
-     "end_sec": 18.6348
-    },
-    {
-     "start": 24.0096,
-     "duration": 1.0,
-     "pitch": 66,
      "velocity": 77,
-     "lyric": "低",
-     "start_sec": 19.4673,
-     "end_sec": 20.2781
+     "lyric": "霜",
+     "tone": 1,
+     "start_sec": 12.9971,
+     "end_sec": 13.8079
     },
     {
-     "start": 25.0082,
-     "duration": 1.0,
-     "pitch": 69,
-     "velocity": 73,
-     "lyric": "头",
-     "start_sec": 20.2769,
-     "end_sec": 21.0877
+     "start": 17.9668,
+     "duration": 0.25,
+     "pitch": 68,
+     "velocity": 50,
+     "lyric": "",
+     "tone": 3,
+     "start_sec": 14.5677,
+     "end_sec": 14.7704
     },
     {
-     "start": 26.0064,
-     "duration": 1.0,
+     "start": 18.2356,
+     "duration": 0.75,
      "pitch": 71,
+     "velocity": 64,
+     "lyric": "举",
+     "tone": 3,
+     "start_sec": 14.7856,
+     "end_sec": 15.3937
+    },
+    {
+     "start": 19.024,
+     "duration": 1.5,
+     "pitch": 75,
+     "velocity": 62,
+     "lyric": "头",
+     "tone": 2,
+     "start_sec": 15.4249,
+     "end_sec": 16.6411
+    },
+    {
+     "start": 20.5053,
+     "duration": 0.5,
+     "pitch": 75,
+     "velocity": 62,
+     "lyric": "望",
+     "tone": 4,
+     "start_sec": 16.6259,
+     "end_sec": 17.0313
+    },
+    {
+     "start": 21.0247,
+     "duration": 0.25,
+     "pitch": 75,
+     "velocity": 63,
+     "lyric": "",
+     "tone": 2,
+     "start_sec": 17.0471,
+     "end_sec": 17.2498
+    },
+    {
+     "start": 21.2574,
+     "duration": 0.75,
+     "pitch": 77,
+     "velocity": 77,
+     "lyric": "明",
+     "tone": 2,
+     "start_sec": 17.2358,
+     "end_sec": 17.8439
+    },
+    {
+     "start": 21.997,
+     "duration": 1.0,
+     "pitch": 77,
+     "velocity": 61,
+     "lyric": "月",
+     "tone": 4,
+     "start_sec": 17.8354,
+     "end_sec": 18.6462
+    },
+    {
+     "start": 24.012,
+     "duration": 1.0,
+     "pitch": 72,
+     "velocity": 79,
+     "lyric": "低",
+     "tone": 1,
+     "start_sec": 19.4692,
+     "end_sec": 20.28
+    },
+    {
+     "start": 24.9724,
+     "duration": 0.25,
+     "pitch": 67,
+     "velocity": 62,
+     "lyric": "",
+     "tone": 2,
+     "start_sec": 20.2479,
+     "end_sec": 20.4506
+    },
+    {
+     "start": 25.2497,
+     "duration": 0.75,
+     "pitch": 70,
+     "velocity": 76,
+     "lyric": "头",
+     "tone": 2,
+     "start_sec": 20.4727,
+     "end_sec": 21.0808
+    },
+    {
+     "start": 26.0076,
+     "duration": 1.0,
+     "pitch": 72,
      "velocity": 73,
      "lyric": "思",
-     "start_sec": 21.0863,
-     "end_sec": 21.8971
+     "tone": 1,
+     "start_sec": 21.0873,
+     "end_sec": 21.8981
     },
     {
-     "start": 26.9775,
-     "duration": 1.0,
-     "pitch": 71,
+     "start": 26.9588,
+     "duration": 0.75,
+     "pitch": 70,
      "velocity": 78,
      "lyric": "故",
-     "start_sec": 21.8737,
-     "end_sec": 22.6999
+     "tone": 4,
+     "start_sec": 21.8585,
+     "end_sec": 22.4747
     },
     {
-     "start": 28.033,
+     "start": 27.7341,
+     "duration": 0.25,
+     "pitch": 67,
+     "velocity": 60,
+     "lyric": "",
+     "tone": 4,
+     "start_sec": 22.4957,
+     "end_sec": 22.7054
+    },
+    {
+     "start": 27.9604,
      "duration": 1.0,
-     "pitch": 69,
-     "velocity": 66,
+     "pitch": 70,
+     "velocity": 68,
      "lyric": "乡",
-     "start_sec": 22.7468,
-     "end_sec": 23.6091
+     "tone": 1,
+     "start_sec": 22.6855,
+     "end_sec": 23.5453
     }
    ]
   }

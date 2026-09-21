@@ -35,14 +35,16 @@ def _print_summary(comp) -> None:
     print(f"Key / mode : {comp.key} {comp.mode}  scale {' '.join(comp.scale)}")
     print(f"Tempo      : {comp.bpm:g} bpm, {comp.time_signature[0]}/{comp.time_signature[1]}, swing {comp.timeline.swing:.2f}")
     print(f"Length     : {comp.total_beats:g} beats, {comp.total_seconds:.1f} s, seed {comp.seed}")
+    print(f"Form       : {comp.form}  ({comp.interpretation.get('poem_form', '')})")
     print("Sections   :")
     for s in comp.sections:
-        print(f"  {s.name:10s} {s.kind:6s} bars {s.start / comp.time_signature[0]:5.0f}-{(s.start + s.duration) / comp.time_signature[0]:<5.0f} "
-              f"{s.mode:14s} {s.progression}: {' '.join(s.numerals)}")
+        print(f"  {s.name:10s} {s.label:2s} {s.role:11s} dyn {s.dynamic:.2f} bars {s.start / comp.time_signature[0]:4.0f}-{(s.start + s.duration) / comp.time_signature[0]:<4.0f} "
+              f"{s.key:3s}{s.mode:15s} {s.progression}: {' '.join(s.numerals)}")
     print("Chords     : " + " | ".join(c.symbol for c in comp.chords))
     lead = comp.track("lead")
     if lead:
-        print("Melody     : " + " ".join(f"{n.lyric}({n.pitch})" for n in lead.notes[:40]) + (" ..." if len(lead.notes) > 40 else ""))
+        sung = [n for n in lead.notes if n.lyric]
+        print("Melody     : " + " ".join(f"{n.lyric}{n.tone or ''}({n.pitch})" for n in sung[:40]) + (" ..." if len(sung) > 40 else ""))
     print("Patches    :")
     for role, p in comp.patches.items():
         print(f"  {role:5s} {p['name']:18s} {p['recipe']}")
@@ -51,10 +53,24 @@ def _print_summary(comp) -> None:
         print(f"  - {line}")
 
 
+def _load_affect(path: Optional[str]):
+    if not path:
+        return None
+    from .llm import parse_affect_json
+    with open(path, "r", encoding="utf-8") as fh:
+        return parse_affect_json(fh.read())
+
+
 def cmd_generate(args: argparse.Namespace) -> int:
     text = _read_text(args.input)
+    affect = _load_affect(args.affect)
+    if args.llm:
+        from .llm import tag_with_claude
+        affect = {**(affect or {}), **tag_with_claude(text)}
+        print("LLM affect: " + json.dumps(affect, ensure_ascii=False), file=sys.stderr)
     comp = generate(text, style=args.style, seed=args.seed, title=args.title, tempo=args.tempo,
-                    key=args.key, mode=args.mode, drums=None if args.drums == "auto" else args.drums == "on")
+                    key=args.key, mode=args.mode, drums=None if args.drums == "auto" else args.drums == "on",
+                    form=args.form, affect=affect, tone_weight=args.tone_weight)
     formats = [f.strip() for f in args.format.split(",") if f.strip()]
     out = args.out
     if out is None:
@@ -97,6 +113,16 @@ def cmd_analyze(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_tag(args: argparse.Namespace) -> int:
+    from .llm import tag_with_claude, tagging_prompt
+    text = _read_text(args.input)
+    if args.llm:
+        print(json.dumps(tag_with_claude(text), ensure_ascii=False, indent=1))
+    else:
+        print(tagging_prompt(text))
+    return 0
+
+
 def cmd_styles(_: argparse.Namespace) -> int:
     for name, st in STYLES.items():
         print(f"{name:10s} {st.tempo_range[0]:3d}-{st.tempo_range[1]:<3d} bpm  major {', '.join(st.major_modes):22s} minor {', '.join(st.minor_modes)}")
@@ -129,6 +155,10 @@ def build_parser() -> argparse.ArgumentParser:
     g.add_argument("--key", help="tonic, e.g. C, F#, Bb")
     g.add_argument("--mode", help="ionian, aeolian, dorian, lydian, mixolydian, phrygian, harmonic_minor ...")
     g.add_argument("--drums", default="auto", choices=["auto", "on", "off"])
+    g.add_argument("--form", default="auto", help="musical form, one letter per stanza, e.g. ABA, AABA (default auto)")
+    g.add_argument("--affect", help="JSON file with affect overrides (valence, arousal, tension, warmth, classical, electronic)")
+    g.add_argument("--llm", action="store_true", help="rate the affect with Claude first (needs `pip install anthropic` and credentials)")
+    g.add_argument("--tone-weight", type=float, help="strength of the Mandarin tone constraint (default 3, 0 disables)")
     g.add_argument("--sample-rate", type=int, default=44100)
     g.add_argument("--quiet", action="store_true")
     g.set_defaults(func=cmd_generate)
@@ -136,6 +166,10 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("input")
     a.add_argument("--verbose", action="store_true")
     a.set_defaults(func=cmd_analyze)
+    t = sub.add_parser("tag", help="print an LLM tagging prompt for a text (or call Claude with --llm)")
+    t.add_argument("input")
+    t.add_argument("--llm", action="store_true")
+    t.set_defaults(func=cmd_tag)
     s = sub.add_parser("styles", help="list styles")
     s.set_defaults(func=cmd_styles)
     p = sub.add_parser("progressions", help="list the progression library")

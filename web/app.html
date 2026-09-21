@@ -1,0 +1,362 @@
+<title>Poet Melody</title>
+<meta name="description" content="把信、诗、文章变成和弦、音色与旋律 — 在手机上直接生成并试听">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --ground: #EEF0F2; --surface: #FFFFFF; --surface-2: #E4E7EC; --ink: #1B2230; --muted: #5C6675;
+    --line: #D3D8E0; --accent: #2B5DB8; --accent-ink: #FFFFFF; --moon: #C9932F; --moon-soft: #F3E4BE;
+    --good: #2E7D5B; --shadow: 0 1px 2px rgba(20, 30, 50, .08), 0 8px 24px rgba(20, 30, 50, .06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0E1320; --surface: #171E2E; --surface-2: #202A3D; --ink: #E8ECF2; --muted: #8E99AB;
+      --line: #2C3648; --accent: #7FA3F0; --accent-ink: #0E1320; --moon: #E8C468; --moon-soft: #3A3320;
+      --good: #6CC7A0; --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0E1320; --surface: #171E2E; --surface-2: #202A3D; --ink: #E8ECF2; --muted: #8E99AB;
+    --line: #2C3648; --accent: #7FA3F0; --accent-ink: #0E1320; --moon: #E8C468; --moon-soft: #3A3320;
+    --good: #6CC7A0; --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font: 15px/1.55 "Noto Sans SC", -apple-system, "PingFang SC", "Segoe UI", sans-serif; }
+  .wrap { max-width: 720px; margin: 0 auto; padding-block: 20px 48px; padding-inline: 16px; display: flex; flex-direction: column; gap: 16px; }
+  header h1 { font: 700 26px/1.2 "Noto Serif SC", "Songti SC", Georgia, serif; margin: 0; letter-spacing: .02em; text-wrap: balance; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+  .card { background: var(--surface); border-radius: 14px; padding: 14px; box-shadow: var(--shadow); }
+  label.field { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+  textarea { width: 100%; min-height: 150px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: var(--ground); color: var(--ink); font: 500 17px/1.7 "Noto Serif SC", "Songti SC", Georgia, serif; }
+  textarea:focus, button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 5px 11px; font-size: 13px; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .row > * { flex: 1 1 140px; }
+  select { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; background: var(--surface); color: var(--ink); font: inherit; }
+  .toggle { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink); }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  button.primary, button.ghost { border-radius: 10px; padding: 11px 18px; font: 600 15px "Noto Sans SC", sans-serif; cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border: 0; flex: 2 1 160px; }
+  button.ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line); flex: 1 1 100px; }
+  button[disabled] { opacity: .45; cursor: default; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+  .stat { background: var(--ground); border-radius: 10px; padding: 8px 10px; }
+  .stat small { display: block; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+  .stat b { font-size: 16px; font-variant-numeric: tabular-nums; }
+  h2 { font: 700 15px/1.3 "Noto Sans SC", sans-serif; margin: 0 0 10px; color: var(--muted); letter-spacing: .04em; }
+  .lyrics { font: 500 22px/1.9 "Noto Serif SC", "Songti SC", Georgia, serif; word-break: break-word; }
+  .lyrics .line { display: block; }
+  .lyrics span.s { padding: 0 2px; border-radius: 4px; position: relative; transition: background .12s; }
+  .lyrics span.s sup { font: 500 10px/1 "Noto Sans SC", sans-serif; color: var(--muted); margin-left: 1px; }
+  .lyrics span.s.now { background: var(--moon); color: #1B2230; }
+  .lyrics span.s.done { color: var(--muted); }
+  .chords { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+  .chord { flex: 0 0 auto; background: var(--ground); border-radius: 8px; padding: 6px 9px; font: 500 13px/1.3 ui-monospace, Menlo, monospace; text-align: center; min-width: 58px; }
+  .chord small { display: block; color: var(--muted); font-size: 11px; }
+  .chord.now { background: var(--moon); color: #1B2230; }
+  .chord.now small { color: #1B2230; }
+  .sections { display: flex; flex-direction: column; gap: 6px; }
+  .sec { display: grid; grid-template-columns: 34px 1fr auto; gap: 8px; align-items: center; font-size: 13px; }
+  .sec .lab { font: 700 15px "Noto Serif SC", serif; color: var(--accent); }
+  .sec .bar { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .sec .bar i { display: block; height: 100%; background: var(--accent); }
+  .sec .meta { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  ol.theory { margin: 0; padding-left: 20px; color: var(--ink); font-size: 13.5px; }
+  ol.theory li { margin: 4px 0; }
+  ol.theory li::marker { color: var(--muted); }
+  details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+  .patch { font: 12px/1.5 ui-monospace, Menlo, monospace; color: var(--muted); margin: 6px 0; word-break: break-word; }
+  .patch b { color: var(--ink); font-family: "Noto Sans SC", sans-serif; }
+  .progress { height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; margin-top: 10px; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--moon); }
+  .note { color: var(--muted); font-size: 12.5px; }
+  .toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--ground); padding: 8px 14px; border-radius: 999px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Poet Melody · 以字行腔</h1>
+    <p>把一封信、一首诗变成和弦、音色与旋律。全部在你的手机里计算，不上传文本。</p>
+  </header>
+
+  <section class="card">
+    <label class="field" for="text">文本 · 信 / 诗 / 文章（空行分段）</label>
+    <textarea id="text" spellcheck="false">床前明月光，
+疑是地上霜。
+举头望明月，
+低头思故乡。</textarea>
+    <div style="height:10px"></div>
+    <label class="field">风格</label>
+    <div class="chips" id="styles" role="group" aria-label="风格"></div>
+    <div style="height:10px"></div>
+    <div class="row">
+      <div>
+        <label class="field" for="form">曲式</label>
+        <select id="form">
+          <option value="auto">自动（按段落数：A / AB / ABA / AABA / 回旋）</option>
+          <option value="A">A（单段）</option>
+          <option value="AB">AB</option>
+          <option value="ABA">ABA</option>
+          <option value="AABA">AABA</option>
+          <option value="ABAB">ABAB</option>
+          <option value="ABACA">ABACA</option>
+        </select>
+      </div>
+      <div>
+        <label class="field" for="tone">依字行腔（声调约束）</label>
+        <select id="tone">
+          <option value="3">标准</option>
+          <option value="5">严格</option>
+          <option value="1.5">轻微</option>
+          <option value="0">关闭</option>
+        </select>
+      </div>
+      <label class="toggle"><input type="checkbox" id="drums" checked> 电子风格加鼓</label>
+    </div>
+    <div style="height:12px"></div>
+    <div class="actions">
+      <button class="primary" id="gen">生成乐曲</button>
+      <button class="ghost" id="play" disabled>▶ 播放</button>
+      <button class="ghost" id="stop" disabled>■ 停止</button>
+    </div>
+    <div class="progress"><i id="bar"></i></div>
+  </section>
+
+  <section class="card" id="result" hidden>
+    <div class="stats" id="stats"></div>
+    <div style="height:14px"></div>
+    <h2>旋律 · 每字一音（上标为普通话声调）</h2>
+    <div class="lyrics" id="lyrics"></div>
+    <div style="height:14px"></div>
+    <h2>和声</h2>
+    <div class="chords" id="chords"></div>
+    <div style="height:14px"></div>
+    <h2>曲式与情感弧线</h2>
+    <div class="sections" id="sections"></div>
+    <div style="height:14px"></div>
+    <h2>作曲说明</h2>
+    <ol class="theory" id="theory"></ol>
+    <div style="height:10px"></div>
+    <details><summary>音色配方（可在任何合成器上重建）</summary><div id="patches"></div></details>
+    <div style="height:12px"></div>
+    <div class="actions">
+      <button class="ghost" id="copy">复制 JSON</button>
+      <button class="ghost" id="reseed">换一个版本</button>
+    </div>
+    <p class="note">同一文本永远得到同一首曲子；"换一个版本"换随机种子。JSON 可交给仓库里的 CLI 渲染 WAV / MIDI，或拖进 web/player.html。</p>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="tones.js"></script>
+<script src="engine.js"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const DRUMS = {36:'kick', 38:'snare', 39:'clap', 42:'hat', 46:'ohat', 51:'ride'};
+let comp = null, ctx = null, master = null, timer = null, startAt = 0, cursor = 0, queue = [], seedBump = 0;
+const trackBus = {};
+let styleChoice = 'auto';
+
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1600); }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// ---- style chips --------------------------------------------------------------
+const STYLE_ZH = {auto:'自动', classical:'古典', romantic:'浪漫', folk:'民谣·五声', jazz:'爵士', neo_soul:'新灵魂', lofi:'Lo-fi',
+  pop:'流行', synthwave:'Synthwave', house:'House', trance:'Trance', ambient:'Ambient', cinematic:'电影'};
+function buildStyles() {
+  const names = ['auto'].concat(PoetMelody.styleNames());
+  $('styles').innerHTML = names.map(n => `<button class="chip" type="button" data-style="${n}" aria-pressed="${n === styleChoice}">${STYLE_ZH[n] || n}</button>`).join('');
+  $('styles').querySelectorAll('.chip').forEach(b => b.onclick = () => {
+    styleChoice = b.dataset.style;
+    $('styles').querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x.dataset.style === styleChoice));
+    generate();
+  });
+}
+
+// ---- generation ----------------------------------------------------------------
+function generate() {
+  const text = $('text').value;
+  if (!text.trim()) { toast('请先输入文本'); return; }
+  stop(true);
+  try {
+    const opts = {style: styleChoice, form: $('form').value, toneWeight: parseFloat($('tone').value), drums: $('drums').checked ? null : false};
+    if (seedBump) opts.seed = (PoetMelody.textSeed ? PoetMelody.textSeed(text) : 0) + seedBump;
+    comp = PoetMelody.generate(text, opts);
+  } catch (e) {
+    toast('生成失败：' + (e.message || e)); console.error(e); return;
+  }
+  render();
+  try { localStorage.setItem('poet-melody-text', text); } catch (e) {}
+}
+function render() {
+  $('result').hidden = false;
+  const it = comp.interpretation || {};
+  $('stats').innerHTML = [
+    ['风格', STYLE_ZH[comp.style] || comp.style], ['调性', `${comp.key} ${comp.mode}`], ['速度', `${comp.bpm} bpm · ${comp.time_signature.join('/')}`],
+    ['曲式', `${comp.form} · ${it.poem_form || ''}`], ['时长', `${comp.duration_seconds.toFixed(0)} s`],
+  ].map(([k, v]) => `<div class="stat"><small>${k}</small><b>${esc(v)}</b></div>`).join('');
+  const lead = comp.tracks.find(t => t.role === 'lead');
+  const sung = lead ? lead.notes.map((n, i) => ({n, i})).filter(x => x.n.lyric) : [];
+  const lines = [];
+  let cur = [], lastEnd = -1;
+  for (const {n, i} of sung) {
+    if (cur.length && n.start - lastEnd > 0.9) { lines.push(cur); cur = []; }
+    cur.push(`<span class="s" data-i="${i}">${esc(n.lyric)}${n.tone ? `<sup>${n.tone}</sup>` : ''}</span>`);
+    lastEnd = n.start + n.duration;
+  }
+  if (cur.length) lines.push(cur);
+  $('lyrics').innerHTML = lines.map(l => `<span class="line">${l.join('')}</span>`).join('');
+  $('chords').innerHTML = comp.chords.map((c, i) => `<div class="chord" data-i="${i}">${esc(c.symbol)}<small>${esc(c.numeral)}</small></div>`).join('');
+  const ROLE_ZH = {intro:'前奏', exposition:'呈示', development:'发展', climax:'高潮', release:'回落', resolution:'收束', salutation:'称呼', farewell:'告别', single:'单段', outro:'尾声'};
+  $('sections').innerHTML = comp.sections.map(s => `<div class="sec"><span class="lab">${esc(s.label || '')}</span>
+      <div><div>${esc(s.name)} · ${ROLE_ZH[s.role] || esc(s.role)} · ${esc(s.key)} ${esc(s.mode)} · ${esc(s.numerals.join(' '))}</div><div class="bar"><i style="width:${Math.round((s.dynamic || 0) * 100)}%"></i></div></div>
+      <span class="meta">${Math.round(s.start / comp.time_signature[0])}–${Math.round((s.start + s.duration) / comp.time_signature[0])} 小节</span></div>`).join('');
+  $('theory').innerHTML = (comp.notes_on_theory || []).map(s => `<li>${esc(s)}</li>`).join('');
+  $('patches').innerHTML = Object.entries(comp.patches).map(([r, p]) => `<div class="patch"><b>${r} · ${esc(p.name)}</b><br>${esc(p.recipe)}</div>`).join('');
+  $('play').disabled = false;
+}
+
+// ---- Web Audio playback (same model as web/player.html) ---------------------------
+function ensureCtx() {
+  if (ctx) return;
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  master = ctx.createGain(); master.gain.value = 0.8;
+  const comp_ = ctx.createDynamicsCompressor(); comp_.threshold.value = -12; comp_.ratio.value = 4;
+  master.connect(comp_).connect(ctx.destination);
+}
+function reverbIR(seconds) {
+  const n = Math.floor(seconds * ctx.sampleRate), buf = ctx.createBuffer(2, n, ctx.sampleRate);
+  for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-6.9 * i / n); }
+  return buf;
+}
+function noiseBuffer(seconds) {
+  const n = Math.floor(seconds * ctx.sampleRate), buf = ctx.createBuffer(1, n, ctx.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  return buf;
+}
+function busFor(track, patch) {
+  if (trackBus[track.name]) return trackBus[track.name];
+  const g = ctx.createGain(); g.gain.value = track.level * ({lead: 1.2, pad: 0.5, keys: 0.8, bass: 0.9, drums: 0.7}[track.role] || 0.8);
+  const pan = ctx.createStereoPanner(); pan.pan.value = Math.max(-1, Math.min(1, (patch ? patch.pan : 0) + track.pan));
+  g.connect(pan);
+  const dry = ctx.createGain(); pan.connect(dry).connect(master);
+  if (patch && patch.reverb_mix > 0) {
+    const conv = ctx.createConvolver(); conv.buffer = reverbIR(Math.min(patch.reverb_size || 2, 4));
+    const wet = ctx.createGain(); wet.gain.value = patch.reverb_mix; dry.gain.value = 1 - patch.reverb_mix * 0.6;
+    pan.connect(conv).connect(wet).connect(master);
+  } else if (track.role === 'drums') {
+    const conv = ctx.createConvolver(); conv.buffer = reverbIR(0.7);
+    const wet = ctx.createGain(); wet.gain.value = 0.15; pan.connect(conv).connect(wet).connect(master);
+  }
+  if (patch && patch.delay_mix > 0 && patch.delay_time > 0) {
+    const dl = ctx.createDelay(4); dl.delayTime.value = patch.delay_time * 60 / comp.bpm;
+    const fb = ctx.createGain(); fb.gain.value = patch.delay_feedback; const mix = ctx.createGain(); mix.gain.value = patch.delay_mix;
+    pan.connect(dl); dl.connect(fb).connect(dl); dl.connect(mix).connect(master);
+  }
+  return trackBus[track.name] = g;
+}
+const WAVE = {sine:'sine', triangle:'triangle', saw:'sawtooth', square:'square', supersaw:'sawtooth'};
+function midiHz(p) { return 440 * Math.pow(2, (p - 69) / 12); }
+function playNote(track, patch, n, t0) {
+  const bus = busFor(track, patch);
+  const start = t0 + n.start_sec, dur = Math.max(0.03, n.end_sec - n.start_sec);
+  const vel = n.velocity / 127, ae = patch.amp_env, fe = patch.filter_env;
+  const amp = ctx.createGain(); amp.gain.setValueAtTime(0, start);
+  const peak = (0.35 + 0.65 * vel) * 0.5;
+  amp.gain.linearRampToValueAtTime(peak, start + ae.attack);
+  amp.gain.setTargetAtTime(peak * ae.sustain, start + ae.attack, ae.decay / 3);
+  const relStart = start + dur; amp.gain.setTargetAtTime(0, relStart, ae.release / 3);
+  const stopAt = relStart + ae.release + 0.05;
+  const filt = ctx.createBiquadFilter(); filt.type = 'lowpass'; filt.Q.value = patch.resonance * 12;
+  const base = patch.cutoff * Math.pow(2, patch.key_tracking * (n.pitch - 60) / 12) * (0.6 + 0.6 * vel);
+  const top = base * Math.pow(2, patch.filter_env_amount);
+  filt.frequency.setValueAtTime(Math.min(base, 18000), start);
+  filt.frequency.linearRampToValueAtTime(Math.min(top, 18000), start + fe.attack);
+  filt.frequency.setTargetAtTime(Math.min(base * Math.pow(2, patch.filter_env_amount * fe.sustain), 18000), start + fe.attack, fe.decay / 3);
+  filt.frequency.setTargetAtTime(Math.min(base, 18000), relStart, fe.release / 3);
+  filt.connect(amp).connect(bus);
+  let lfo = null;
+  if (patch.lfo_rate > 0 && patch.lfo_target === 'pitch') {
+    lfo = ctx.createOscillator(); lfo.frequency.value = patch.lfo_rate;
+    const lg = ctx.createGain(); lg.gain.setValueAtTime(0, start); lg.gain.linearRampToValueAtTime(patch.lfo_depth, start + patch.lfo_delay + 0.4);
+    lfo.connect(lg); lfo.start(start); lfo.stop(stopAt); lfo._out = lg;
+  }
+  const voices = Math.min(3, Math.max(1, patch.unison));   // phones: cap unison voices
+  for (const o of patch.oscs) {
+    const layers = o.wave === 'supersaw' ? [-9, 0, 9] : [0];
+    for (const cents of layers) for (let v = 0; v < voices; v++) {
+      const spread = voices > 1 ? (v / (voices - 1) - 0.5) * patch.unison_detune : 0;
+      const g = ctx.createGain(); g.gain.value = o.level / Math.sqrt(voices * layers.length);
+      let src;
+      if (o.wave === 'noise') { src = ctx.createBufferSource(); src.buffer = noiseBuffer(dur + ae.release + 0.1); }
+      else { src = ctx.createOscillator(); src.type = WAVE[o.wave] || 'sine'; src.frequency.value = midiHz(n.pitch + 12 * o.octave); src.detune.value = o.detune + cents + spread; if (lfo) lfo._out.connect(src.detune); }
+      src.connect(g).connect(filt); src.start(start); src.stop(stopAt);
+    }
+  }
+  if (patch.noise > 0) { const s = ctx.createBufferSource(); s.buffer = noiseBuffer(dur + 0.5); const g = ctx.createGain(); g.gain.value = patch.noise; s.connect(g).connect(filt); s.start(start); s.stop(stopAt); }
+}
+function playDrum(track, n, t0) {
+  const bus = busFor(track, null), start = t0 + n.start_sec, vel = n.velocity / 127, kind = DRUMS[n.pitch] || 'hat';
+  if (kind === 'kick') {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.setValueAtTime(180, start); o.frequency.exponentialRampToValueAtTime(42, start + 0.05);
+    g.gain.setValueAtTime(vel, start); g.gain.exponentialRampToValueAtTime(0.001, start + 0.4);
+    o.connect(g).connect(bus); o.start(start); o.stop(start + 0.45); return;
+  }
+  const s = ctx.createBufferSource(); s.buffer = noiseBuffer(0.4);
+  const f = ctx.createBiquadFilter(); f.type = kind === 'snare' || kind === 'clap' ? 'bandpass' : 'highpass';
+  f.frequency.value = kind === 'snare' ? 1800 : kind === 'clap' ? 1200 : 7000;
+  const g = ctx.createGain(); const dec = {snare:0.15, clap:0.12, hat:0.03, ohat:0.2, ride:0.3}[kind];
+  g.gain.setValueAtTime(vel * 0.6, start); g.gain.exponentialRampToValueAtTime(0.001, start + dec);
+  s.connect(f).connect(g).connect(bus); s.start(start); s.stop(start + dec + 0.05);
+  if (kind === 'snare') { const o = ctx.createOscillator(); o.frequency.value = 185; const og = ctx.createGain(); og.gain.setValueAtTime(vel * 0.4, start); og.gain.exponentialRampToValueAtTime(0.001, start + 0.08); o.connect(og).connect(bus); o.start(start); o.stop(start + 0.1); }
+}
+function play() {
+  if (!comp) return;
+  stop(false);
+  ensureCtx(); ctx.resume();
+  queue = [];
+  for (const tr of comp.tracks) for (const n of tr.notes) queue.push({tr, n});
+  queue.sort((a, b) => a.n.start_sec - b.n.start_sec);
+  startAt = ctx.currentTime + 0.2; cursor = 0;
+  $('play').disabled = true; $('stop').disabled = false;
+  timer = setInterval(tick, 60); tick();
+}
+function tick() {
+  const now = ctx.currentTime - startAt, horizon = now + 0.8;
+  while (cursor < queue.length && queue[cursor].n.start_sec <= horizon) {
+    const {tr, n} = queue[cursor++];
+    if (tr.role === 'drums') playDrum(tr, n, startAt); else playNote(tr, comp.patches[tr.role], n, startAt);
+  }
+  $('bar').style.width = Math.min(100, Math.max(0, now / comp.duration_seconds * 100)) + '%';
+  const lead = comp.tracks.find(t => t.role === 'lead');
+  if (lead) document.querySelectorAll('#lyrics span.s').forEach(el => { const nn = lead.notes[+el.dataset.i]; el.className = 's' + (now >= nn.start_sec && now < nn.end_sec ? ' now' : now >= nn.end_sec ? ' done' : ''); });
+  document.querySelectorAll('#chords .chord').forEach((el, i) => { const c = comp.chords[i]; const on = now >= c.start_sec && now < c.end_sec; el.className = 'chord' + (on ? ' now' : ''); if (on && !el._scrolled) { el._scrolled = true; el.scrollIntoView({block: 'nearest', inline: 'center', behavior: 'smooth'}); } });
+  if (now > comp.duration_seconds + 3) stop(true);
+}
+function stop(reset) {
+  if (timer) clearInterval(timer); timer = null;
+  if (ctx) { ctx.close(); ctx = null; master = null; for (const k in trackBus) delete trackBus[k]; }
+  $('play').disabled = !comp; $('stop').disabled = true;
+  if (reset) { $('bar').style.width = '0'; document.querySelectorAll('#lyrics span.s').forEach(el => el.className = 's'); document.querySelectorAll('#chords .chord').forEach(el => { el.className = 'chord'; el._scrolled = false; }); }
+}
+
+// ---- wiring --------------------------------------------------------------------------
+$('gen').onclick = () => { seedBump = 0; generate(); };
+$('reseed').onclick = () => { seedBump += 1; generate(); };
+$('play').onclick = play;
+$('stop').onclick = () => stop(true);
+$('form').onchange = generate; $('tone').onchange = generate; $('drums').onchange = generate;
+$('copy').onclick = async () => {
+  try { await navigator.clipboard.writeText(JSON.stringify(comp)); toast('已复制 JSON'); }
+  catch (e) { toast('无法访问剪贴板'); }
+};
+buildStyles();
+try { const saved = localStorage.getItem('poet-melody-text'); if (saved) $('text').value = saved; } catch (e) {}
+generate();
+</script>
