@@ -48,6 +48,7 @@
   h2 { font: 700 15px/1.3 "Noto Sans SC", sans-serif; margin: 0 0 10px; color: var(--muted); letter-spacing: .04em; }
   .lyrics { font: 500 22px/1.9 "Noto Serif SC", "Songti SC", Georgia, serif; word-break: break-word; }
   .lyrics .line { display: block; }
+  .lyrics .w { white-space: nowrap; }
   .lyrics span.s { padding: 0 2px; border-radius: 4px; position: relative; transition: background .12s; }
   .lyrics span.s sup { font: 500 10px/1 "Noto Sans SC", sans-serif; color: var(--muted); margin-left: 1px; }
   .lyrics span.s.now { background: var(--moon); color: #1B2230; }
@@ -202,15 +203,30 @@ function render() {
   ].map(([k, v]) => `<div class="stat"><small>${k}</small><b>${esc(v)}</b></div>`).join('');
   const lead = comp.tracks.find(t => t.role === 'lead');
   const sung = lead ? lead.notes.map((n, i) => ({n, i})).filter(x => x.n.lyric) : [];
-  const lines = [];
-  let cur = [], lastEnd = -1;
-  for (const {n, i} of sung) {
-    if (cur.length && n.start - lastEnd > 0.9) { lines.push(cur); cur = []; }
-    cur.push(`<span class="s" data-i="${i}">${esc(n.lyric)}${n.tone ? `<sup>${n.tone}</sup>` : ''}</span>`);
-    lastEnd = n.start + n.duration;
+  // Lay the sung notes out line by line, joining English syllables back into words.
+  const stanzas = PoetMelody.analyze($('text').value).stanzas || [];
+  const html = [];
+  let k = 0;
+  for (const st of stanzas) for (const line of st.lines) {
+    const words = [];
+    const tokens = line.text.match(/[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]|[A-Za-z']+|\d+/g) || [];
+    for (const tok of tokens) {
+      const isCJK = /[\u3400-\u9fff]/.test(tok);
+      const need = isCJK ? 1 : (/^\d+$/.test(tok) ? tok.length : tok.replace(/[^a-z']/gi, '').length);
+      const parts = [];
+      let got = 0;
+      while (k < sung.length && (isCJK ? parts.length < 1 : got < need)) {
+        const {n, i} = sung[k++];
+        parts.push(`<span class="s" data-i="${i}">${esc(n.lyric)}${n.tone ? `<sup>${n.tone}</sup>` : ''}</span>`);
+        got += n.lyric.length;
+        if (!isCJK && /^\d+$/.test(tok) && parts.length >= need) break;
+      }
+      if (parts.length) words.push(`<span class="w">${parts.join('')}</span>`);
+    }
+    html.push(`<span class="line">${words.join(' ')}</span>`);
   }
-  if (cur.length) lines.push(cur);
-  $('lyrics').innerHTML = lines.map(l => `<span class="line">${l.join('')}</span>`).join('');
+  if (k < sung.length) html.push(`<span class="line">${sung.slice(k).map(({n, i}) => `<span class="s" data-i="${i}">${esc(n.lyric)}</span>`).join('')}</span>`);
+  $('lyrics').innerHTML = html.join('');
   $('chords').innerHTML = comp.chords.map((c, i) => `<div class="chord" data-i="${i}">${esc(c.symbol)}<small>${esc(c.numeral)}</small></div>`).join('');
   const ROLE_ZH = {intro:'前奏', exposition:'呈示', development:'发展', climax:'高潮', release:'回落', resolution:'收束', salutation:'称呼', farewell:'告别', single:'单段', outro:'尾声'};
   $('sections').innerHTML = comp.sections.map(s => `<div class="sec"><span class="lab">${esc(s.label || '')}</span>
