@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poet Melody Player</title>
+<link rel="icon" href="data:,">
+<style>
+  :root { --bg:#111418; --fg:#e8e6e3; --dim:#8a8f98; --acc:#f2b84b; --acc2:#5cc8ff; --card:#1a1f26; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font: 15px/1.5 -apple-system, "PingFang SC", "Noto Sans CJK SC", Segoe UI, sans-serif; padding:16px; }
+  h1 { font-size:20px; margin:0 0 8px; }
+  .drop { border:2px dashed #3a4250; border-radius:12px; padding:20px; text-align:center; color:var(--dim); margin:12px 0; }
+  .drop.over { border-color:var(--acc); color:var(--fg); }
+  .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  button { background:var(--acc); color:#111; border:0; border-radius:8px; padding:8px 16px; font-weight:600; cursor:pointer; }
+  button[disabled] { opacity:.4; cursor:default; }
+  .card { background:var(--card); border-radius:12px; padding:12px 14px; margin:12px 0; }
+  .meta span { display:inline-block; margin-right:16px; color:var(--dim); }
+  .meta b { color:var(--fg); }
+  .chords { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { padding:4px 8px; border-radius:6px; background:#242a33; font-family: ui-monospace, monospace; font-size:13px; }
+  .chip.now { background:var(--acc); color:#111; }
+  .lyrics { font-size:22px; line-height:1.8; word-break:break-all; }
+  .lyrics span { padding:0 2px; border-radius:4px; }
+  .lyrics span.now { background:var(--acc2); color:#111; }
+  .lyrics span.done { color:var(--dim); }
+  .patch { font-family: ui-monospace, monospace; font-size:12px; color:var(--dim); margin:4px 0; }
+  .patch b { color:var(--fg); }
+  input[type=range] { width:200px; }
+  .theory li { color:var(--dim); font-size:13px; }
+</style>
+</head>
+<body>
+<h1>Poet Melody · 文本音乐播放器</h1>
+<div class="drop" id="drop">把 <code>poet-melody generate</code> 生成的 <b>.json</b> 拖到这里，或 <input type="file" id="file" accept=".json"></div>
+<div class="row">
+  <button id="play" disabled>▶ 播放</button>
+  <button id="stop" disabled>■ 停止</button>
+  <label>音量 <input type="range" id="vol" min="0" max="1" step="0.01" value="0.7"></label>
+  <span id="time" style="color:var(--dim)">0.0 s</span>
+</div>
+<div class="card meta" id="meta" hidden></div>
+<div class="card" id="lyricsCard" hidden><div class="lyrics" id="lyrics"></div></div>
+<div class="card" id="chordCard" hidden><div class="chords" id="chords"></div></div>
+<div class="card" id="patchCard" hidden></div>
+<div class="card" id="theoryCard" hidden><ul class="theory" id="theory"></ul></div>
+
+<script>
+'use strict';
+const DRUMS = {36:'kick', 38:'snare', 39:'clap', 42:'hat', 46:'ohat', 51:'ride'};
+let comp = null, ctx = null, master = null, timer = null, startAt = 0, cursor = 0, playing = false;
+const $ = id => document.getElementById(id);
+
+function loadJSON(text) {
+  comp = JSON.parse(text);
+  $('meta').hidden = false;
+  $('meta').innerHTML = `<span>标题 <b>${esc(comp.title)}</b></span><span>风格 <b>${comp.style}</b></span>` +
+    `<span>调性 <b>${comp.key} ${comp.mode}</b></span><span>速度 <b>${comp.bpm} bpm ${comp.time_signature.join('/')}</b></span>` +
+    `<span>时长 <b>${comp.duration_seconds.toFixed(1)} s</b></span>`;
+  const lead = comp.tracks.find(t => t.role === 'lead');
+  $('lyricsCard').hidden = !lead;
+  if (lead) $('lyrics').innerHTML = lead.notes.map((n, i) => `<span data-i="${i}">${esc(n.lyric || '·')}</span>`).join('');
+  $('chordCard').hidden = false;
+  $('chords').innerHTML = comp.chords.map((c, i) => `<span class="chip" data-i="${i}">${esc(c.symbol)}<br><small>${esc(c.numeral)}</small></span>`).join('');
+  $('patchCard').hidden = false;
+  $('patchCard').innerHTML = Object.entries(comp.patches).map(([r, p]) => `<div class="patch"><b>${r}: ${esc(p.name)}</b> — ${esc(p.recipe)}</div>`).join('');
+  $('theoryCard').hidden = false;
+  $('theory').innerHTML = (comp.notes_on_theory || []).map(s => `<li>${esc(s)}</li>`).join('');
+  $('play').disabled = false;
+}
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// ---------------------------------------------------------------- audio graph
+function ensureCtx() {
+  if (ctx) return;
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  master = ctx.createGain(); master.gain.value = +$('vol').value;
+  const comp_ = ctx.createDynamicsCompressor(); comp_.threshold.value = -12; comp_.ratio.value = 4;
+  master.connect(comp_).connect(ctx.destination);
+}
+function reverbIR(seconds) {
+  const n = Math.floor(seconds * ctx.sampleRate), buf = ctx.createBuffer(2, n, ctx.sampleRate);
+  for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-6.9 * i / n); }
+  return buf;
+}
+function noiseBuffer(seconds) {
+  const n = Math.floor(seconds * ctx.sampleRate), buf = ctx.createBuffer(1, n, ctx.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  return buf;
+}
+const trackBus = {};
+function busFor(track, patch) {
+  if (trackBus[track.name]) return trackBus[track.name];
+  const g = ctx.createGain(); g.gain.value = track.level * (track.role === 'lead' ? 1.2 : track.role === 'pad' ? 0.5 : 0.8);
+  const pan = ctx.createStereoPanner(); pan.pan.value = Math.max(-1, Math.min(1, (patch ? patch.pan : 0) + track.pan));
+  g.connect(pan);
+  const dry = ctx.createGain(); pan.connect(dry).connect(master);
+  if (patch && patch.reverb_mix > 0) {
+    const conv = ctx.createConvolver(); conv.buffer = reverbIR(patch.reverb_size || 2);
+    const wet = ctx.createGain(); wet.gain.value = patch.reverb_mix; dry.gain.value = 1 - patch.reverb_mix * 0.6;
+    pan.connect(conv).connect(wet).connect(master);
+  } else if (track.role === 'drums') {
+    const conv = ctx.createConvolver(); conv.buffer = reverbIR(0.7);
+    const wet = ctx.createGain(); wet.gain.value = 0.15; pan.connect(conv).connect(wet).connect(master);
+  }
+  if (patch && patch.delay_mix > 0 && patch.delay_time > 0) {
+    const dl = ctx.createDelay(4); dl.delayTime.value = patch.delay_time * 60 / comp.bpm;
+    const fb = ctx.createGain(); fb.gain.value = patch.delay_feedback; const mix = ctx.createGain(); mix.gain.value = patch.delay_mix;
+    pan.connect(dl); dl.connect(fb).connect(dl); dl.connect(mix).connect(master);
+  }
+  return trackBus[track.name] = g;
+}
+const WAVE = {sine:'sine', triangle:'triangle', saw:'sawtooth', square:'square', supersaw:'sawtooth'};
+function midiHz(p) { return 440 * Math.pow(2, (p - 69) / 12); }
+
+function playNote(track, patch, n, t0) {
+  const bus = busFor(track, patch);
+  const start = t0 + n.start_sec, dur = Math.max(0.03, n.end_sec - n.start_sec);
+  const vel = n.velocity / 127, ae = patch.amp_env, fe = patch.filter_env;
+  const amp = ctx.createGain(); amp.gain.setValueAtTime(0, start);
+  const peak = (0.35 + 0.65 * vel) * 0.5;
+  amp.gain.linearRampToValueAtTime(peak, start + ae.attack);
+  amp.gain.setTargetAtTime(peak * ae.sustain, start + ae.attack, ae.decay / 3);
+  const relStart = start + dur; amp.gain.setTargetAtTime(0, relStart, ae.release / 3);
+  const stopAt = relStart + ae.release + 0.05;
+  const filt = ctx.createBiquadFilter(); filt.type = 'lowpass'; filt.Q.value = patch.resonance * 12;
+  const base = patch.cutoff * Math.pow(2, patch.key_tracking * (n.pitch - 60) / 12) * (0.6 + 0.6 * vel);
+  const top = base * Math.pow(2, patch.filter_env_amount);
+  filt.frequency.setValueAtTime(Math.min(base, 18000), start);
+  filt.frequency.linearRampToValueAtTime(Math.min(top, 18000), start + fe.attack);
+  filt.frequency.setTargetAtTime(Math.min(base * Math.pow(2, patch.filter_env_amount * fe.sustain), 18000), start + fe.attack, fe.decay / 3);
+  filt.frequency.setTargetAtTime(Math.min(base, 18000), relStart, fe.release / 3);
+  filt.connect(amp).connect(bus);
+  let lfo = null;
+  if (patch.lfo_rate > 0 && patch.lfo_target === 'pitch') {
+    lfo = ctx.createOscillator(); lfo.frequency.value = patch.lfo_rate;
+    const lg = ctx.createGain(); lg.gain.setValueAtTime(0, start); lg.gain.linearRampToValueAtTime(patch.lfo_depth, start + patch.lfo_delay + 0.4);
+    lfo.connect(lg); lfo.start(start); lfo.stop(stopAt); lfo._out = lg;
+  }
+  const voices = Math.max(1, patch.unison);
+  for (const o of patch.oscs) {
+    const layers = o.wave === 'supersaw' ? [-11, -6, -2, 0, 2, 6, 11] : [0];
+    for (const cents of layers) for (let v = 0; v < voices; v++) {
+      const spread = voices > 1 ? (v / (voices - 1) - 0.5) * patch.unison_detune : 0;
+      const g = ctx.createGain(); g.gain.value = o.level / Math.sqrt(voices * layers.length);
+      let src;
+      if (o.wave === 'noise') { src = ctx.createBufferSource(); src.buffer = noiseBuffer(dur + ae.release + 0.1); }
+      else { src = ctx.createOscillator(); src.type = WAVE[o.wave] || 'sine'; src.frequency.value = midiHz(n.pitch + 12 * o.octave); src.detune.value = o.detune + cents + spread; if (lfo) lfo._out.connect(src.detune); }
+      src.connect(g).connect(filt); src.start(start); src.stop(stopAt);
+    }
+  }
+  if (patch.noise > 0) { const s = ctx.createBufferSource(); s.buffer = noiseBuffer(dur + 0.5); const g = ctx.createGain(); g.gain.value = patch.noise; s.connect(g).connect(filt); s.start(start); s.stop(stopAt); }
+}
+function playDrum(track, n, t0) {
+  const bus = busFor(track, null), start = t0 + n.start_sec, vel = n.velocity / 127, kind = DRUMS[n.pitch] || 'hat';
+  if (kind === 'kick') {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.setValueAtTime(180, start); o.frequency.exponentialRampToValueAtTime(42, start + 0.05);
+    g.gain.setValueAtTime(vel, start); g.gain.exponentialRampToValueAtTime(0.001, start + 0.4);
+    o.connect(g).connect(bus); o.start(start); o.stop(start + 0.45); return;
+  }
+  const s = ctx.createBufferSource(); s.buffer = noiseBuffer(0.4);
+  const f = ctx.createBiquadFilter(); f.type = kind === 'snare' || kind === 'clap' ? 'bandpass' : 'highpass';
+  f.frequency.value = kind === 'snare' ? 1800 : kind === 'clap' ? 1200 : 7000;
+  const g = ctx.createGain(); const dec = {snare:0.15, clap:0.12, hat:0.03, ohat:0.2, ride:0.3}[kind];
+  g.gain.setValueAtTime(vel * 0.6, start); g.gain.exponentialRampToValueAtTime(0.001, start + dec);
+  s.connect(f).connect(g).connect(bus); s.start(start); s.stop(start + dec + 0.05);
+  if (kind === 'snare') { const o = ctx.createOscillator(); o.frequency.value = 185; const og = ctx.createGain(); og.gain.setValueAtTime(vel * 0.4, start); og.gain.exponentialRampToValueAtTime(0.001, start + 0.08); o.connect(og).connect(bus); o.start(start); o.stop(start + 0.1); }
+}
+
+// ------------------------------------------------------------- scheduling
+let queue = [];
+function play() {
+  stop(false);
+  ensureCtx(); ctx.resume();
+  queue = [];
+  for (const tr of comp.tracks) for (const n of tr.notes) queue.push({tr, n});
+  queue.sort((a, b) => a.n.start_sec - b.n.start_sec);
+  startAt = ctx.currentTime + 0.15; cursor = 0; playing = true;
+  $('play').disabled = true; $('stop').disabled = false;
+  timer = setInterval(tick, 50); tick();
+}
+function tick() {
+  const now = ctx.currentTime - startAt, horizon = now + 1.0;
+  while (cursor < queue.length && queue[cursor].n.start_sec <= horizon) {
+    const {tr, n} = queue[cursor++];
+    if (tr.role === 'drums') playDrum(tr, n, startAt); else playNote(tr, comp.patches[tr.role], n, startAt);
+  }
+  $('time').textContent = Math.max(0, now).toFixed(1) + ' s';
+  const lead = comp.tracks.find(t => t.role === 'lead');
+  if (lead) document.querySelectorAll('#lyrics span').forEach((el, i) => { const nn = lead.notes[i]; el.className = now >= nn.start_sec && now < nn.end_sec ? 'now' : now >= nn.end_sec ? 'done' : ''; });
+  document.querySelectorAll('#chords .chip').forEach((el, i) => { const c = comp.chords[i]; el.className = 'chip' + (now >= c.start_sec && now < c.end_sec ? ' now' : ''); });
+  if (now > comp.duration_seconds + 3) stop(true);
+}
+function stop(reset) {
+  if (timer) clearInterval(timer); timer = null; playing = false;
+  if (ctx) { ctx.close(); ctx = null; master = null; for (const k in trackBus) delete trackBus[k]; }
+  $('play').disabled = !comp; $('stop').disabled = true;
+  if (reset) { $('time').textContent = '0.0 s'; document.querySelectorAll('#lyrics span, #chords .chip').forEach(el => el.classList.remove('now', 'done')); }
+}
+$('play').onclick = play; $('stop').onclick = () => stop(true);
+$('vol').oninput = e => { if (master) master.gain.value = +e.target.value; };
+$('file').onchange = e => { const f = e.target.files[0]; if (f) f.text().then(loadJSON); };
+const drop = $('drop');
+drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+drop.ondragleave = () => drop.classList.remove('over');
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) f.text().then(loadJSON); };
+</script>
+</body>
+</html>

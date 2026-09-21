@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "poet-melody"
+version = "0.1.0"
+description = "Turn letters, poems and articles into chord progressions, synth patches and melodies (classical + electronic music theory)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+audio = ["numpy>=1.22"]
+dev = ["numpy>=1.22", "pytest>=7"]
+
+[project.scripts]
+poet-melody = "poet_melody.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["poet_melody*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
