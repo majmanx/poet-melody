@@ -307,6 +307,17 @@
     }
     return out;
   };
+  // Pitch classes to voice in the pad/keys: extended chords drop the fifth first,
+  // then the root (the bass supplies it), so 9th/13th chords never become clusters.
+  Chord.prototype.voicingPcs = function (maxVoices) {
+    if (maxVoices === undefined) maxVoices = 4;
+    var pcs = this.pcs();
+    if (pcs.length <= maxVoices) return pcs;
+    var fifth = this.fifth();
+    if (fifth !== null && pcs.length > maxVoices) pcs = pcs.filter(function (pc) { return pc !== fifth; });
+    if (pcs.length > maxVoices) pcs = pcs.slice(1);
+    return pcs.slice(0, maxVoices);
+  };
   Chord.prototype.third = function () {
     var iv = this.intervals();
     for (var i = 0; i < iv.length; i++) if (iv[i] === 3 || iv[i] === 4) return mod(this.root + iv[i], 12);
@@ -389,7 +400,7 @@
     if (low === undefined) low = 48;
     if (high === undefined) high = 72;
     if (maxVoices === undefined) maxVoices = 4;
-    var pcs = chord.pcs().slice(0, maxVoices);
+    var pcs = chord.voicingPcs(maxVoices);
     var r = low + mod(pcs[0] - low, 12);
     var voicing = [r];
     for (var i = 1; i < pcs.length; i++) {
@@ -417,7 +428,7 @@
     if (low === undefined) low = 48;
     if (high === undefined) high = 76;
     if (maxVoices === undefined) maxVoices = 4;
-    var pcs = chord.pcs().slice(0, maxVoices);
+    var pcs = chord.voicingPcs(maxVoices);
     if (!prev || !prev.length) return closeVoicing(chord, low, high, maxVoices);
     prev = prev.slice().sort(function (a, b) { return a - b; });
     if (prev.length < pcs.length) {
@@ -1073,7 +1084,7 @@
 
   function HarmonyOptions(o) {
     var d = { length: 4, sevenths: 0.0, extensions: 0.0, mixture: 0.0, mediants: 0.0, secondary: 0.0,
-      tritone: 0.0, cadence: 'authentic', sus: 0.0 };
+      tritone: 0.0, cadence: 'authentic', sus: 0.0, diminished: true };
     return assign(d, o || {});
   }
 
@@ -1113,10 +1124,23 @@
       if (tail) states.splice(states.length - 2, 2, tail[0], tail[1]);
     }
     var numerals = [];
+    var mixtureUsed = false;
     for (var i = 0; i < states.length; i++) {
       var st = states[i];
       var choicesArr = funcs[st].slice();
-      if (rng.random() < opts.mixture && MIXTURE[family][st]) choicesArr = MIXTURE[family][st];
+      var prevState = i > 0 ? states[i - 1] : null;
+      // Modal mixture: borrowed subdominants anywhere; a borrowed *tonic* (bIII / bVI)
+      // only once and only after a subdominant, never as the resolution of a dominant.
+      if (rng.random() < opts.mixture && MIXTURE[family][st]) {
+        if (st !== 'T' || (prevState === 'S' && !mixtureUsed)) {
+          choicesArr = MIXTURE[family][st];
+          if (st === 'T') mixtureUsed = true;
+        }
+      }
+      if (!opts.diminished) {
+        choicesArr = choicesArr.filter(function (c) { return c.indexOf('°') < 0; });
+        if (!choicesArr.length) choicesArr = family === 'minor' ? ['iv'] : ['IV'];
+      }
       var numeral = rng.choice(choicesArr);
       if (numerals.length && uniq(choicesArr).length > 1) {
         var tries = 0;
@@ -1192,7 +1216,7 @@
       description: 'Chromatic mediants, modal mixture, deceptive cadences, rubato feel.' }),
     folk: Style({ name: 'folk', family: 'classical', tempo_range: [72, 104], major_modes: ['ionian', 'mixolydian'],
       minor_modes: ['aeolian', 'dorian'], melody_scale: 'pentatonic', time_signatures: [[4, 4], [3, 4]],
-      harmony: HarmonyOptions({ sevenths: 0.0, sus: 0.3, cadence: 'plagal' }),
+      harmony: HarmonyOptions({ diminished: false, sevenths: 0.0, sus: 0.3, cadence: 'plagal' }),
       library_ratio: 0.8, pad: 'sustain', keys: 'broken', bass: 'root_fifth', drums: 'none', ritardando: true, humanize: 0.02,
       description: 'Pentatonic (宫/羽) melodies over simple triads and sus chords; plagal cadences.' }),
     jazz: Style({ name: 'jazz', family: 'hybrid', tempo_range: [88, 150], major_modes: ['ionian', 'lydian'],
@@ -1202,34 +1226,34 @@
       description: 'ii-V-I, extended chords, tritone substitutions, walking bass, swung eighths.' }),
     neo_soul: Style({ name: 'neo_soul', family: 'hybrid', tempo_range: [68, 92], major_modes: ['ionian', 'lydian'],
       minor_modes: ['dorian', 'aeolian'], swing: 0.58,
-      harmony: HarmonyOptions({ sevenths: 1.0, extensions: 0.8, mixture: 0.3, cadence: 'plagal' }),
+      harmony: HarmonyOptions({ diminished: false, sevenths: 1.0, extensions: 0.8, mixture: 0.3, cadence: 'plagal' }),
       library_ratio: 0.7, pad: 'sustain', keys: 'comp', bass: 'root_13', drums: 'lofi', humanize: 0.04,
       description: 'Lush 9th/13th voicings, borrowed iv and bVII, laid-back drums.' }),
     lofi: Style({ name: 'lofi', family: 'electronic', tempo_range: [68, 86], major_modes: ['ionian', 'lydian'],
       minor_modes: ['dorian', 'aeolian'], swing: 0.6,
-      harmony: HarmonyOptions({ sevenths: 0.95, extensions: 0.6, mixture: 0.25, cadence: 'plagal' }),
+      harmony: HarmonyOptions({ diminished: false, sevenths: 0.95, extensions: 0.6, mixture: 0.25, cadence: 'plagal' }),
       library_ratio: 0.7, pad: 'sustain', keys: 'stab_offbeat', bass: 'root_13', drums: 'lofi', humanize: 0.05,
       description: 'Warm detuned keys, seventh chords, swung lo-fi drums, tape wobble.' }),
     pop: Style({ name: 'pop', family: 'hybrid', tempo_range: [92, 128], major_modes: ['ionian', 'mixolydian'],
-      minor_modes: ['aeolian'], harmony: HarmonyOptions({ sevenths: 0.1, cadence: 'none' }), library_ratio: 0.85,
+      minor_modes: ['aeolian'], harmony: HarmonyOptions({ diminished: false, sevenths: 0.1, cadence: 'none' }), library_ratio: 0.85,
       pad: 'sustain', keys: 'broken', bass: 'octaves8', drums: 'four_floor', sidechain: 0.25,
       description: 'Four-chord loops (I-V-vi-IV and friends), steady pulse.' }),
     synthwave: Style({ name: 'synthwave', family: 'electronic', tempo_range: [84, 118], major_modes: ['ionian'],
-      minor_modes: ['aeolian'], harmony: HarmonyOptions({ sevenths: 0.05, sus: 0.25, cadence: 'none' }), library_ratio: 0.85,
+      minor_modes: ['aeolian'], harmony: HarmonyOptions({ diminished: false, sevenths: 0.05, sus: 0.25, cadence: 'none' }), library_ratio: 0.85,
       pad: 'sustain', keys: 'arpeggio_up', bass: 'octaves8', drums: 'backbeat', sidechain: 0.5,
       description: 'Aeolian i-VI-III-VII loops, supersaw pads, octave bass, gated-reverb drums.' }),
     house: Style({ name: 'house', family: 'electronic', tempo_range: [118, 126], major_modes: ['ionian'],
       minor_modes: ['aeolian', 'dorian'], swing: 0.54,
-      harmony: HarmonyOptions({ sevenths: 0.5, extensions: 0.2, cadence: 'none' }), library_ratio: 0.8,
+      harmony: HarmonyOptions({ diminished: false, sevenths: 0.5, extensions: 0.2, cadence: 'none' }), library_ratio: 0.8,
       pad: 'stab', keys: 'stab_offbeat', bass: 'offbeat8', drums: 'four_floor', sidechain: 0.6,
       description: 'Dorian / aeolian two-chord vamps, off-beat bass, four-on-the-floor.' }),
     trance: Style({ name: 'trance', family: 'electronic', tempo_range: [132, 140], major_modes: ['ionian'],
-      minor_modes: ['aeolian'], harmony: HarmonyOptions({ sevenths: 0.0, cadence: 'none' }), library_ratio: 0.85,
+      minor_modes: ['aeolian'], harmony: HarmonyOptions({ diminished: false, sevenths: 0.0, cadence: 'none' }), library_ratio: 0.85,
       pad: 'sustain', keys: 'pluck16', bass: 'rolling16', drums: 'trance', sidechain: 0.7, lead_octave_shift: 0,
       description: 'Uplifting aeolian loops, rolling 16th bass, supersaw leads.' }),
     ambient: Style({ name: 'ambient', family: 'electronic', tempo_range: [56, 72], major_modes: ['lydian', 'ionian'],
       minor_modes: ['dorian', 'aeolian'], bars_per_chord: 2,
-      harmony: HarmonyOptions({ sevenths: 0.9, extensions: 0.5, sus: 0.4, cadence: 'plagal' }), library_ratio: 0.7,
+      harmony: HarmonyOptions({ diminished: false, sevenths: 0.9, extensions: 0.5, sus: 0.4, cadence: 'plagal' }), library_ratio: 0.7,
       pad: 'swell', keys: 'arpeggio_updown', bass: 'drone', drums: 'none', ritardando: true,
       description: 'Slow lydian / dorian colour, long swells, drones, lots of reverb.' }),
     cinematic: Style({ name: 'cinematic', family: 'hybrid', tempo_range: [60, 96], major_modes: ['lydian', 'ionian'],
@@ -1567,6 +1591,28 @@
     this.prev_interval = 0;
     this.prev_sign = 1;
     this.repeats = 0;
+    this.prev_nonchord = false;      // the previous note was a non-chord tone (must resolve by step)
+  }
+
+  // Scale tones a semitone away from a chord tone that is *not* in the scale (the b7 against a
+  // major V in minor, the natural 6 against a borrowed iv ...): the classic wrong-note clash.
+  function avoidNotes(scale, chordPcs) {
+    var out = [];
+    for (var i = 0; i < chordPcs.length; i++) {
+      var ct = chordPcs[i];
+      if (includes(scale, ct)) continue;
+      var nb = [mod(ct - 1, 12), mod(ct + 1, 12)];
+      for (var k = 0; k < 2; k++) if (includes(scale, nb[k]) && !includes(out, nb[k])) out.push(nb[k]);
+    }
+    return out;
+  }
+
+  // How restful a chord tone is: root/fifth > third > seventh > extensions.
+  var STABILITY = [1.0, 0.85, 1.0, 0.55, 0.35, 0.3];
+  function stability(pc, chordPcs) {
+    var idx = chordPcs.indexOf(pc);
+    if (idx < 0) return 0.0;
+    return idx < 6 ? STABILITY[idx] : 0.3;
   }
 
   function singLine(phrase, chords, beatsPerBar, cfg, rng, state) {
@@ -1577,7 +1623,7 @@
     var has = function (d) { return includes(devices, d); };
     var center = cfg.center + phrase.register_shift + (has('night') ? -3 : 0) + (has('light') ? 2 : 0);
     var lo = center - cfg.span, hi = center + cfg.span;
-    var amplitude = 5.0 + 7.0 * cfg.arousal;
+    var amplitude = 4.0 + 5.0 * cfg.arousal;
     var strongBeats = beatsPerBar === 4 ? [0, 2] : [0];
     var tones = (phrase.tones && phrase.tones.length) ? phrase.tones.slice() : tonesOf(line.syllables);
     var zh = tones.some(function (t) { return t; });
@@ -1598,7 +1644,7 @@
       if (has('fall')) arc = 0.6 * arc + 0.4 * (1 - x);
       var token = line.syllables[i];
       var tone = i < tones.length ? tones[i] : 0;
-      var target = center + baseOffset + (arc - 0.4) * amplitude + signature(token) * 0.6;
+      var target = center + baseOffset + (arc - 0.4) * amplitude + signature(token) * 0.4;
       if (tone) target += (TONE_LEVEL[tone] - 0.55) * 4.0;
       var posInBar = mod(beat, beatsPerBar);
       var strong = includes(strongBeats, pyRound(posInBar * 4) / 4);
@@ -1609,20 +1655,32 @@
       if (phrase.motif && phrase.motif.length && i < phrase.motif.length + 1 && i > 0 && state.prev_pitch !== null) {
         motifIv = phrase.motif[i - 1];
       }
-      var allowed = (strong || last) ? uniq(scale.concat(chordPcs)) : scale.slice();
+      var avoid = avoidNotes(scale, chordPcs);
+      var scaleOk = scale.filter(function (pc) { return !includes(avoid, pc); });
+      var allowed = (strong || last) ? uniq(scaleOk.concat(chordPcs)) : scaleOk;
       var best = null;
       for (var p = lo; p <= hi; p++) {
         if (!includes(allowed, mod(p, 12))) continue;
         var score = -Math.abs(p - target);
         var inChord = includes(chordPcs, mod(p, 12));
-        if (strong) score += inChord ? 3.0 : -1.0;
-        else score += inChord ? 0.8 : 0.0;
+        var stab = stability(mod(p, 12), chordPcs);
+        if (strong) score += inChord ? 3.2 * stab : -1.0;
+        else score += inChord ? 0.9 * stab : 0.0;
+        if (!inChord) {
+          // A scale tone a semitone *above* a chord tone (the jazz "avoid note": 4 over a major
+          // triad, b9 over a dominant) is harsh unless it passes quickly.
+          var semiAbove = false;
+          for (var ci = 0; ci < chordPcs.length; ci++) if (mod(p - chordPcs[ci], 12) === 1) { semiAbove = true; break; }
+          if (semiAbove) score -= 1.5 + (dur >= 1.0 ? 1.5 : 0.0);
+        }
         if (state.prev_pitch !== null) {
           var d = Math.abs(p - state.prev_pitch);
           var sgn = p > state.prev_pitch ? 1 : (p < state.prev_pitch ? -1 : 0);
           if (d > (has('far') ? 12 : 9)) continue;
           if (d > 7) score -= has('far') ? 1.0 : 5.0;
           else if (d > 4) score -= has('far') ? -0.5 : 1.5;
+          if (d > 4 && state.prev_interval > 4 && sgn * state.prev_sign > 0) score -= 3.0;   // two leaps in the same direction
+          if (state.prev_nonchord) score += d <= 2 ? 1.5 : -2.0;   // a non-chord tone resolves by step
           if (has('flow') && d > 2) score -= 1.5;
           if (d === 6 || d === 10 || d === 11) score -= 2.5;
           if (d === 0) score -= cfg.repeat_penalty * (1 + state.repeats);
@@ -1638,11 +1696,13 @@
         } else {
           if (!inChord) score -= 2.0;
         }
+        // Phrase endings rest on triad tones, not on sevenths or extensions.
         if (last) {
           var deg = mod(p - tonic, 12);
           var rootPc = chord ? chord.root : tonic;
           var third = (chord && chord.pcs.length > 1) ? chord.pcs[1] : rootPc;
           var ppc = mod(p, 12);
+          if (inChord && chordPcs.indexOf(ppc) >= 3) score -= 2.0;
           if (phrase.ending === 'open') {
             if (deg === 7 || deg === 2) score += 2.5;
             if (ppc === tonic) score -= 1.0;
@@ -1671,6 +1731,7 @@
         state.prev_sign = iv > 0 ? 1 : (iv < 0 ? -1 : state.prev_sign);
       }
       state.prev_pitch = pitch;
+      state.prev_nonchord = !includes(chordPcs, mod(pitch, 12));
       var vel = 62 + Math.trunc(34 * cfg.arousal) + (strong ? 8 : 0) + Math.trunc(8 * arc) + phrase.velocity_shift +
         (has('night') ? -8 : 0) + (has('light') ? 6 : 0) + lineRng.randint(-4, 4);
       vel = Math.max(30, Math.min(127, vel));
@@ -1813,7 +1874,7 @@
       keys = Patch('Dusty Rhodes', 'keys', { oscs: [Osc('sine', 0, 0, 0.8), Osc('triangle', 1, 0, 0.35), Osc('sine', 2, 0, 0.12)],
         cutoff: lerp(1200, 2600, bright), resonance: 0.1, filter_env_amount: 1.2,
         filter_env: Env(0.002, 0.5, 0.2, 0.5), amp_env: Env(0.004, 1.8, 0.35, 0.7), key_tracking: 0.5,
-        lfo_rate: name !== 'lofi' ? 4.2 : 0.3, lfo_depth: name !== 'lofi' ? 0.25 : 8,
+        lfo_rate: name !== 'lofi' ? 4.2 : 0.3, lfo_depth: name !== 'lofi' ? 0.25 : 5,
         lfo_target: name !== 'lofi' ? 'amp' : 'pitch', drive: 0.25,
         reverb_mix: 0.28, reverb_size: reverbSize * 0.7, chorus: 0.3, level: 0.6 });
     } else if (name === 'house') {
@@ -1885,7 +1946,9 @@
         cutoff: leadCut, resonance: 0.2, filter_env_amount: 1.0, filter_env: Env(0.01, 0.4, 0.5, 0.3),
         amp_env: Env(0.01, 0.2, 0.8, 0.3), lfo_rate: vibRate, lfo_depth: 10, lfo_target: 'pitch', lfo_delay: 0.25,
         glide: 0.04, drive: 0.2, reverb_mix: 0.3, reverb_size: reverbSize,
-        delay_time: 0.75, delay_feedback: 0.4, delay_mix: 0.3, level: 0.6 });
+        // Echoes of a fast sung line smear against the next chord, so the dotted-eighth
+        // delay backs off as the text gets denser.
+        delay_time: 0.75, delay_feedback: 0.3, delay_mix: lerp(0.3, 0.12, ar), level: 0.6 });
     } else if (name === 'lofi' || name === 'neo_soul' || name === 'jazz') {
       lead = Patch(name === 'jazz' ? 'Muted Horn' : 'Soft Square', 'lead', {
         oscs: [Osc('square', 0, 0, 0.5, 0.3), Osc('triangle', 0, 0, 0.5), Osc('sine', -1, 0, 0.2)],
@@ -2182,6 +2245,13 @@
 
     var colourMode = opts.mode || chooseMode(f, st, rng);
     if (!SCALES[colourMode]) throw new Error('unknown mode ' + JSON.stringify(colourMode));
+    // A style whose library only knows one mode family (trance is minor music) keeps the whole
+    // piece in that family instead of mixing parallel keys.
+    var notesFamily = null;
+    if (!opts.mode && !libraryFor(st.name, colourMode).length && libraryFor(st.name).length) {
+      colourMode = (isMajorLike(colourMode) ? st.minor_modes : st.major_modes)[0];
+      notesFamily = isMajorLike(colourMode) ? 'major' : 'minor';
+    }
     var tonic;
     if (opts.key) {
       if (!Object.prototype.hasOwnProperty.call(NOTE_TO_PC, opts.key)) throw new Error('unknown key ' + JSON.stringify(opts.key));
@@ -2206,6 +2276,7 @@
       sections: [], chords: [], tracks: [], patches: {}, notes_on_theory: []
     };
     var notesOnTheory = interp.notes.slice();
+    if (notesFamily) notesOnTheory.push('The ' + styleName + ' progression library is ' + notesFamily + '-only, so the piece stays in ' + colourMode + '.');
 
     // ---- Harmony per form letter
     var nSections = f.stanzas.length;
@@ -2265,9 +2336,13 @@
         if (label === 'B') {
           var pMod = (st.family === 'classical' || st.name === 'cinematic') ? 0.75 : 0.35;
           if (rng.random() < pMod) {
-            modulated = true;
-            if (isMajorLike(colourMode)) { secTonic = mod(tonic + 9, 12); secColour = st.minor_modes[0]; }
-            else { secTonic = mod(tonic + 3, 12); secColour = st.major_modes[0]; }
+            var candTonic, candColour;
+            if (isMajorLike(colourMode)) { candTonic = mod(tonic + 9, 12); candColour = st.minor_modes[0]; }
+            else { candTonic = mod(tonic + 3, 12); candColour = st.major_modes[0]; }
+            // Only modulate when the style can actually play in the relative key.
+            if (libraryFor(st.name, candColour).length || !libraryFor(st.name).length) {
+              secTonic = candTonic; secColour = candColour; modulated = true;
+            }
           }
         }
         var pr = progressionFor(st, secColour, f, rng, cadence, usedNames, isLast);
