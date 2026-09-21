@@ -49,46 +49,46 @@
   "seed": 3666512751,
   "keyword_hits": {
    "positive": [
-    "依然",
+    "亲爱",
     "平安",
     "温暖",
-    "亲爱",
+    "依然",
     "好",
     "好"
    ],
    "negative": [
-    "老",
-    "夜"
+    "夜",
+    "老"
    ],
    "high_arousal": [
-    "呼啸",
     "霓虹",
+    "呼啸",
     "闪"
    ],
    "low_arousal": [
     "深夜"
    ],
    "tension": [
+    "如果",
     "是否",
     "等待",
-    "如果",
     "还",
     "还",
     "还"
    ],
    "warm": [
-    "回来",
     "我们",
+    "回来",
     "你",
     "你",
     "你",
     "你",
     "你",
     "你",
-    "暖",
     "茶",
     "亲",
-    "温"
+    "温",
+    "暖"
    ],
    "cold": [
     "屏幕",
@@ -96,12 +96,12 @@
    ],
    "classical": [],
    "electronic": [
-    "深夜",
-    "屏幕",
-    "地铁",
-    "城市",
+    "闪烁",
     "霓虹",
-    "闪烁"
+    "城市",
+    "屏幕",
+    "深夜",
+    "地铁"
    ]
   }
  },
@@ -232,11 +232,11 @@
   "Poem form: letter; musical form ABAB (sections sharing a letter share harmony and the head motif).",
   "Emotional arc: climax at stanza 2 (salutation 0.40, climax 1.00, release 0.55, farewell 0.40).",
   "Word painting: stanza 2 line 2: lower register, softer; stanza 2 line 3: contour up, stepwise legato motion; stanza 3 line 3: contour up, line ends on the tonic",
-  "Stanza 1 [A, salutation, dyn 0.40]: generated (plagal cadence) in Ab ionian -> Imaj9 iii9 bVII7 Imaj9; cadence plagal; final tone 3 (closed).",
+  "Stanza 1 [A, salutation, dyn 0.40]: generated (plagal cadence) in Ab ionian -> Imaj9 iii9 bVImaj7 Imaj9; cadence plagal; final tone 3 (closed).",
   "Stanza 2 [B, climax, dyn 1.00]: lofi vi ii I V in Ab ionian -> vi9 ii9 Imaj9 V9; cadence half; final tone 2 (open).",
-  "Stanza 3 [A, release, dyn 0.55]: generated (plagal cadence) in Ab ionian -> Imaj9 iii9 bVII7 Imaj9; cadence half; final tone 2 (open).",
+  "Stanza 3 [A, release, dyn 0.55]: generated (plagal cadence) in Ab ionian -> Imaj9 iii9 bVImaj7 Imaj9; cadence half; final tone 2 (open).",
   "Stanza 4 [B, farewell, dyn 0.40]: lofi vi ii I V in Ab ionian -> vi9 ii9 Imaj9 V9; cadence plagal; final tone 3 (closed).",
-  "Head motif of section A: intervals +7, +3, -3 (recalled at the start of every later A section).",
+  "Head motif of section A: intervals -3, +7, -2 (recalled at the start of every later A section).",
   "Melody: one note per syllable (95 syllables), chord tones on strong beats, mode scale, phrase endings open/semi/closed/final, leitmotif signatures per syllable, 依字行腔 tone constraint weight 3 with tone ornaments; range centred on MIDI 68.",
   "Timbre from warmth 0.78 / arousal 0.42 / tension 0.73: pad = Tape Pad, keys = Dusty Rhodes, bass = Sub Round, lead = Soft Square (full recipes under 'patches')."
  ],
@@ -251,7 +251,7 @@
    "numerals": [
     "Imaj9",
     "iii9",
-    "bVII7",
+    "bVImaj7",
     "Imaj9"
    ],
    "text": "",
@@ -270,7 +270,7 @@
    "numerals": [
     "Imaj9",
     "iii9",
-    "bVII7",
+    "bVImaj7",
     "Imaj9"
    ],
    "text": "亲爱的你：",
@@ -308,7 +308,7 @@
    "numerals": [
     "Imaj9",
     "iii9",
-    "bVII7",
+    "bVImaj7",
     "Imaj9"
    ],
    "text": "你还好吗？\n那些没说完的话，是否还在等待一个答案……\n如果有一天你回来，我会在老地方煮一壶茶。",
@@ -407,23 +407,23 @@
   {
    "start": 8.0,
    "duration": 4,
-   "symbol": "Gb7",
-   "numeral": "bVII7",
-   "root": 6,
-   "quality": "7",
+   "symbol": "Emaj7",
+   "numeral": "bVImaj7",
+   "root": 4,
+   "quality": "maj7",
    "pcs": [
-    6,
-    10,
-    1,
-    4
+    4,
+    8,
+    11,
+    3
    ],
    "voicing": [
-    61,
+    63,
     64,
-    66,
-    70
+    68,
+    71
    ],
-   "bass": 42,
+   "bass": 40,
    "start_sec": 6.1538,
    "end_sec": 9.2308
   },
@@ -505,23 +505,23 @@
   {
    "start": 24.0,
    "duration": 4,
-   "symbol": "Gb7",
-   "numeral": "bVII7",
-   "root": 6,
-   "quality": "7",
+   "symbol": "Emaj7",
+   "numeral": "bVImaj7",
+   "root": 4,
+   "quality": "maj7",
    "pcs": [
-    6,
-    10,
-    1,
-    4
+    4,
+    8,
+    11,
+    3
    ],
    "voicing": [
     64,
-    66,
-    70,
-    73
+    68,
+    71,
+    75
    ],
-   "bass": 42,
+   "bass": 40,
    "start_sec": 18.4615,
    "end_sec": 21.5385
   },
@@ -878,23 +878,23 @@
   {
    "start": 84.0,
    "duration": 4,
-   "symbol": "Gb7",
-   "numeral": "bVII7",
-   "root": 6,
-   "quality": "7",
+   "symbol": "Emaj7",
+   "numeral": "bVImaj7",
+   "root": 4,
+   "quality": "maj7",
    "pcs": [
-    6,
-    10,
-    1,
-    4
+    4,
+    8,
+    11,
+    3
    ],
    "voicing": [
-    66,
-    70,
-    73,
-    76
+    64,
+    68,
+    71,
+    75
    ],
-   "bass": 42,
+   "bass": 40,
    "start_sec": 64.6154,
    "end_sec": 67.6923
   },
@@ -976,23 +976,23 @@
   {
    "start": 100.0,
    "duration": 4,
-   "symbol": "Gb7",
-   "numeral": "bVII7",
-   "root": 6,
-   "quality": "7",
+   "symbol": "Emaj7",
+   "numeral": "bVImaj7",
+   "root": 4,
+   "quality": "maj7",
    "pcs": [
-    6,
-    10,
-    1,
-    4
+    4,
+    8,
+    11,
+    3
    ],
    "voicing": [
-    66,
-    70,
-    73,
-    76
+    64,
+    68,
+    71,
+    75
    ],
-   "bass": 42,
+   "bass": 40,
    "start_sec": 76.9231,
    "end_sec": 80.0
   },
@@ -1024,23 +1024,23 @@
   {
    "start": 108.0,
    "duration": 4,
-   "symbol": "Gb7",
-   "numeral": "bVII7",
-   "root": 6,
-   "quality": "7",
+   "symbol": "Emaj7",
+   "numeral": "bVImaj7",
+   "root": 4,
+   "quality": "maj7",
    "pcs": [
-    6,
-    10,
-    1,
-    4
+    4,
+    8,
+    11,
+    3
    ],
    "voicing": [
-    66,
-    70,
-    73,
+    68,
+    71,
+    75,
     76
    ],
-   "bass": 42,
+   "bass": 40,
    "start_sec": 83.0769,
    "end_sec": 86.1538
   },
@@ -1300,7 +1300,7 @@
    },
    "key_tracking": 0.5,
    "lfo_rate": 0.3,
-   "lfo_depth": 8,
+   "lfo_depth": 5,
    "lfo_target": "pitch",
    "lfo_delay": 0.0,
    "drive": 0.25,
@@ -1314,7 +1314,7 @@
    "chorus": 0.3,
    "pan": 0.0,
    "level": 0.6,
-   "recipe": "sine + triangle +1oct + sine +2oct; LPF 2180Hz Q 0.10 env +1.2oct (A0.00 D0.50 S0.20 R0.50); amp A0.00 D1.80 S0.35 R0.70; LFO 0.30Hz -> pitch (8); reverb 28% (2.1s), chorus 30%"
+   "recipe": "sine + triangle +1oct + sine +2oct; LPF 2180Hz Q 0.10 env +1.2oct (A0.00 D0.50 S0.20 R0.50); amp A0.00 D1.80 S0.35 R0.70; LFO 0.30Hz -> pitch (5); reverb 28% (2.1s), chorus 30%"
   },
   "bass": {
    "name": "Sub Round",
@@ -1545,7 +1545,7 @@
     {
      "start": 8.0,
      "duration": 3.95,
-     "pitch": 61,
+     "pitch": 63,
      "velocity": 72,
      "lyric": "",
      "tone": 0,
@@ -1565,7 +1565,7 @@
     {
      "start": 8.0,
      "duration": 3.95,
-     "pitch": 66,
+     "pitch": 68,
      "velocity": 72,
      "lyric": "",
      "tone": 0,
@@ -1575,7 +1575,7 @@
     {
      "start": 8.0,
      "duration": 3.95,
-     "pitch": 70,
+     "pitch": 71,
      "velocity": 72,
      "lyric": "",
      "tone": 0,
@@ -1745,7 +1745,7 @@
     {
      "start": 24.0,
      "duration": 3.95,
-     "pitch": 66,
+     "pitch": 68,
      "velocity": 60,
      "lyric": "",
      "tone": 0,
@@ -1755,7 +1755,7 @@
     {
      "start": 24.0,
      "duration": 3.95,
-     "pitch": 70,
+     "pitch": 71,
      "velocity": 60,
      "lyric": "",
      "tone": 0,
@@ -1765,7 +1765,7 @@
     {
      "start": 24.0,
      "duration": 3.95,
-     "pitch": 73,
+     "pitch": 75,
      "velocity": 60,
      "lyric": "",
      "tone": 0,
@@ -2475,7 +2475,7 @@
     {
      "start": 84.0,
      "duration": 3.95,
-     "pitch": 66,
+     "pitch": 64,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -2485,7 +2485,7 @@
     {
      "start": 84.0,
      "duration": 3.95,
-     "pitch": 70,
+     "pitch": 68,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -2495,7 +2495,7 @@
     {
      "start": 84.0,
      "duration": 3.95,
-     "pitch": 73,
+     "pitch": 71,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -2505,7 +2505,7 @@
     {
      "start": 84.0,
      "duration": 3.95,
-     "pitch": 76,
+     "pitch": 75,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -2665,7 +2665,7 @@
     {
      "start": 100.0,
      "duration": 3.95,
-     "pitch": 66,
+     "pitch": 64,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -2675,7 +2675,7 @@
     {
      "start": 100.0,
      "duration": 3.95,
-     "pitch": 70,
+     "pitch": 68,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -2685,7 +2685,7 @@
     {
      "start": 100.0,
      "duration": 3.95,
-     "pitch": 73,
+     "pitch": 71,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -2695,7 +2695,7 @@
     {
      "start": 100.0,
      "duration": 3.95,
-     "pitch": 76,
+     "pitch": 75,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -2755,7 +2755,7 @@
     {
      "start": 108.0,
      "duration": 3.95,
-     "pitch": 66,
+     "pitch": 68,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -2765,7 +2765,7 @@
     {
      "start": 108.0,
      "duration": 3.95,
-     "pitch": 70,
+     "pitch": 71,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -2775,7 +2775,7 @@
     {
      "start": 108.0,
      "duration": 3.95,
-     "pitch": 73,
+     "pitch": 75,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -3396,7 +3396,7 @@
     {
      "start": 8.0884,
      "duration": 1.0,
-     "pitch": 61,
+     "pitch": 63,
      "velocity": 63,
      "lyric": "",
      "tone": 0,
@@ -3416,7 +3416,7 @@
     {
      "start": 7.9673,
      "duration": 1.0,
-     "pitch": 66,
+     "pitch": 68,
      "velocity": 66,
      "lyric": "",
      "tone": 0,
@@ -3426,7 +3426,7 @@
     {
      "start": 8.0455,
      "duration": 1.0,
-     "pitch": 70,
+     "pitch": 71,
      "velocity": 66,
      "lyric": "",
      "tone": 0,
@@ -3436,7 +3436,7 @@
     {
      "start": 10.4228,
      "duration": 1.0,
-     "pitch": 61,
+     "pitch": 63,
      "velocity": 69,
      "lyric": "",
      "tone": 0,
@@ -3456,7 +3456,7 @@
     {
      "start": 10.4732,
      "duration": 1.0,
-     "pitch": 66,
+     "pitch": 68,
      "velocity": 64,
      "lyric": "",
      "tone": 0,
@@ -3466,7 +3466,7 @@
     {
      "start": 10.5387,
      "duration": 1.0,
-     "pitch": 70,
+     "pitch": 71,
      "velocity": 62,
      "lyric": "",
      "tone": 0,
@@ -5126,7 +5126,7 @@
     {
      "start": 84.0894,
      "duration": 1.0,
-     "pitch": 66,
+     "pitch": 64,
      "velocity": 58,
      "lyric": "",
      "tone": 0,
@@ -5136,7 +5136,7 @@
     {
      "start": 83.9492,
      "duration": 1.0,
-     "pitch": 70,
+     "pitch": 68,
      "velocity": 55,
      "lyric": "",
      "tone": 0,
@@ -5146,7 +5146,7 @@
     {
      "start": 84.1117,
      "duration": 1.0,
-     "pitch": 73,
+     "pitch": 71,
      "velocity": 60,
      "lyric": "",
      "tone": 0,
@@ -5156,7 +5156,7 @@
     {
      "start": 84.0454,
      "duration": 1.0,
-     "pitch": 76,
+     "pitch": 75,
      "velocity": 58,
      "lyric": "",
      "tone": 0,
@@ -5166,7 +5166,7 @@
     {
      "start": 86.4778,
      "duration": 1.0,
-     "pitch": 66,
+     "pitch": 64,
      "velocity": 55,
      "lyric": "",
      "tone": 0,
@@ -5176,7 +5176,7 @@
     {
      "start": 86.5626,
      "duration": 1.0,
-     "pitch": 70,
+     "pitch": 68,
      "velocity": 61,
      "lyric": "",
      "tone": 0,
@@ -5186,7 +5186,7 @@
     {
      "start": 86.5156,
      "duration": 1.0,
-     "pitch": 73,
+     "pitch": 71,
      "velocity": 58,
      "lyric": "",
      "tone": 0,
@@ -5196,7 +5196,7 @@
     {
      "start": 86.5443,
      "duration": 1.0,
-     "pitch": 76,
+     "pitch": 75,
      "velocity": 62,
      "lyric": "",
      "tone": 0,
@@ -5606,7 +5606,7 @@
     {
      "start": 99.9797,
      "duration": 1.0,
-     "pitch": 66,
+     "pitch": 64,
      "velocity": 59,
      "lyric": "",
      "tone": 0,
@@ -5616,7 +5616,7 @@
     {
      "start": 100.0656,
      "duration": 1.0,
-     "pitch": 70,
+     "pitch": 68,
      "velocity": 58,
      "lyric": "",
      "tone": 0,
@@ -5626,7 +5626,7 @@
     {
      "start": 99.9365,
      "duration": 1.0,
-     "pitch": 73,
+     "pitch": 71,
      "velocity": 60,
      "lyric": "",
      "tone": 0,
@@ -5636,7 +5636,7 @@
     {
      "start": 100.0143,
      "duration": 1.0,
-     "pitch": 76,
+     "pitch": 75,
      "velocity": 56,
      "lyric": "",
      "tone": 0,
@@ -5646,7 +5646,7 @@
     {
      "start": 101.5364,
      "duration": 1.0,
-     "pitch": 66,
+     "pitch": 64,
      "velocity": 60,
      "lyric": "",
      "tone": 0,
@@ -5656,7 +5656,7 @@
     {
      "start": 101.4693,
      "duration": 1.0,
-     "pitch": 70,
+     "pitch": 68,
      "velocity": 60,
      "lyric": "",
      "tone": 0,
@@ -5666,7 +5666,7 @@
     {
      "start": 101.48,
      "duration": 1.0,
-     "pitch": 73,
+     "pitch": 71,
      "velocity": 57,
      "lyric": "",
      "tone": 0,
@@ -5676,7 +5676,7 @@
     {
      "start": 101.4679,
      "duration": 1.0,
-     "pitch": 76,
+     "pitch": 75,
      "velocity": 57,
      "lyric": "",
      "tone": 0,
@@ -5686,7 +5686,7 @@
     {
      "start": 102.557,
      "duration": 1.0,
-     "pitch": 66,
+     "pitch": 64,
      "velocity": 55,
      "lyric": "",
      "tone": 0,
@@ -5696,7 +5696,7 @@
     {
      "start": 102.4865,
      "duration": 1.0,
-     "pitch": 70,
+     "pitch": 68,
      "velocity": 62,
      "lyric": "",
      "tone": 0,
@@ -5706,7 +5706,7 @@
     {
      "start": 102.4791,
      "duration": 1.0,
-     "pitch": 73,
+     "pitch": 71,
      "velocity": 60,
      "lyric": "",
      "tone": 0,
@@ -5716,7 +5716,7 @@
     {
      "start": 102.4743,
      "duration": 1.0,
-     "pitch": 76,
+     "pitch": 75,
      "velocity": 55,
      "lyric": "",
      "tone": 0,
@@ -5876,7 +5876,7 @@
     {
      "start": 107.8592,
      "duration": 1.0,
-     "pitch": 66,
+     "pitch": 68,
      "velocity": 58,
      "lyric": "",
      "tone": 0,
@@ -5886,7 +5886,7 @@
     {
      "start": 107.8978,
      "duration": 1.0,
-     "pitch": 70,
+     "pitch": 71,
      "velocity": 62,
      "lyric": "",
      "tone": 0,
@@ -5896,7 +5896,7 @@
     {
      "start": 108.0357,
      "duration": 1.0,
-     "pitch": 73,
+     "pitch": 75,
      "velocity": 61,
      "lyric": "",
      "tone": 0,
@@ -5916,7 +5916,7 @@
     {
      "start": 109.532,
      "duration": 1.0,
-     "pitch": 66,
+     "pitch": 68,
      "velocity": 58,
      "lyric": "",
      "tone": 0,
@@ -5926,7 +5926,7 @@
     {
      "start": 109.5222,
      "duration": 1.0,
-     "pitch": 70,
+     "pitch": 71,
      "velocity": 61,
      "lyric": "",
      "tone": 0,
@@ -5936,7 +5936,7 @@
     {
      "start": 109.4693,
      "duration": 1.0,
-     "pitch": 73,
+     "pitch": 75,
      "velocity": 58,
      "lyric": "",
      "tone": 0,
@@ -5956,7 +5956,7 @@
     {
      "start": 110.5713,
      "duration": 1.0,
-     "pitch": 66,
+     "pitch": 68,
      "velocity": 62,
      "lyric": "",
      "tone": 0,
@@ -5966,7 +5966,7 @@
     {
      "start": 110.4214,
      "duration": 1.0,
-     "pitch": 70,
+     "pitch": 71,
      "velocity": 59,
      "lyric": "",
      "tone": 0,
@@ -5976,7 +5976,7 @@
     {
      "start": 110.5182,
      "duration": 1.0,
-     "pitch": 73,
+     "pitch": 75,
      "velocity": 57,
      "lyric": "",
      "tone": 0,
@@ -7507,7 +7507,7 @@
     {
      "start": 8.0376,
      "duration": 1.5,
-     "pitch": 42,
+     "pitch": 40,
      "velocity": 82,
      "lyric": "",
      "tone": 0,
@@ -7517,7 +7517,7 @@
     {
      "start": 10.5605,
      "duration": 1.0,
-     "pitch": 42,
+     "pitch": 40,
      "velocity": 74,
      "lyric": "",
      "tone": 0,
@@ -7607,7 +7607,7 @@
     {
      "start": 23.9643,
      "duration": 1.5,
-     "pitch": 42,
+     "pitch": 40,
      "velocity": 68,
      "lyric": "",
      "tone": 0,
@@ -7617,7 +7617,7 @@
     {
      "start": 26.5129,
      "duration": 1.0,
-     "pitch": 42,
+     "pitch": 40,
      "velocity": 62,
      "lyric": "",
      "tone": 0,
@@ -7957,7 +7957,7 @@
     {
      "start": 84.0119,
      "duration": 1.5,
-     "pitch": 42,
+     "pitch": 40,
      "velocity": 73,
      "lyric": "",
      "tone": 0,
@@ -7967,7 +7967,7 @@
     {
      "start": 86.4646,
      "duration": 1.0,
-     "pitch": 42,
+     "pitch": 40,
      "velocity": 66,
      "lyric": "",
      "tone": 0,
@@ -8057,7 +8057,7 @@
     {
      "start": 99.9217,
      "duration": 1.5,
-     "pitch": 42,
+     "pitch": 40,
      "velocity": 73,
      "lyric": "",
      "tone": 0,
@@ -8067,7 +8067,7 @@
     {
      "start": 102.5392,
      "duration": 1.0,
-     "pitch": 49,
+     "pitch": 47,
      "velocity": 66,
      "lyric": "",
      "tone": 0,
@@ -8107,7 +8107,7 @@
     {
      "start": 107.9967,
      "duration": 1.5,
-     "pitch": 42,
+     "pitch": 40,
      "velocity": 73,
      "lyric": "",
      "tone": 0,
@@ -8117,7 +8117,7 @@
     {
      "start": 110.5395,
      "duration": 1.0,
-     "pitch": 42,
+     "pitch": 40,
      "velocity": 66,
      "lyric": "",
      "tone": 0,
@@ -8268,7 +8268,7 @@
     {
      "start": 16.0104,
      "duration": 2.0,
-     "pitch": 60,
+     "pitch": 63,
      "velocity": 76,
      "lyric": "亲",
      "tone": 1,
@@ -8278,8 +8278,8 @@
     {
      "start": 18.5186,
      "duration": 1.0,
-     "pitch": 67,
-     "velocity": 77,
+     "pitch": 60,
+     "velocity": 80,
      "lyric": "爱",
      "tone": 4,
      "start_sec": 14.3191,
@@ -8288,7 +8288,7 @@
     {
      "start": 19.4697,
      "duration": 2.0,
-     "pitch": 70,
+     "pitch": 67,
      "velocity": 76,
      "lyric": "的",
      "tone": 5,
@@ -8297,99 +8297,99 @@
     },
     {
      "start": 21.4449,
-     "duration": 0.25,
-     "pitch": 63,
-     "velocity": 56,
-     "lyric": "",
-     "tone": 3,
-     "start_sec": 16.5645,
-     "end_sec": 16.7353
-    },
-    {
-     "start": 21.7817,
-     "duration": 1.25,
-     "pitch": 67,
-     "velocity": 70,
+     "duration": 1.5,
+     "pitch": 65,
+     "velocity": 75,
      "lyric": "你",
      "tone": 3,
-     "start_sec": 16.7888,
-     "end_sec": 17.7216
+     "start_sec": 16.5645,
+     "end_sec": 17.6584
     },
     {
-     "start": 32.0945,
+     "start": 32.0317,
      "duration": 2.0,
      "pitch": 65,
-     "velocity": 99,
+     "velocity": 100,
      "lyric": "好",
      "tone": 3,
-     "start_sec": 24.7026,
-     "end_sec": 26.241
+     "start_sec": 24.6447,
+     "end_sec": 26.1831
     },
     {
-     "start": 34.0519,
+     "start": 34.0945,
      "duration": 1.5,
      "pitch": 72,
      "velocity": 102,
      "lyric": "久",
      "tone": 3,
-     "start_sec": 26.2017,
-     "end_sec": 27.4165
+     "start_sec": 26.241,
+     "end_sec": 27.4427
     },
     {
-     "start": 35.4642,
+     "start": 35.5519,
      "duration": 1.75,
      "pitch": 75,
      "velocity": 98,
      "lyric": "不",
      "tone": 4,
-     "start_sec": 27.3516,
-     "end_sec": 28.6593
+     "start_sec": 27.4165,
+     "end_sec": 28.7402
     },
     {
-     "start": 37.2374,
+     "start": 37.2142,
      "duration": 0.25,
      "pitch": 73,
      "velocity": 80,
      "lyric": "",
      "tone": 4,
-     "start_sec": 28.6807,
-     "end_sec": 28.9115
+     "start_sec": 28.6593,
+     "end_sec": 28.8901
     },
     {
-     "start": 37.5622,
+     "start": 37.4874,
      "duration": 1.5,
-     "pitch": 72,
+     "pitch": 73,
      "velocity": 89,
      "lyric": "见",
      "tone": 4,
-     "start_sec": 28.9614,
-     "end_sec": 30.0574
+     "start_sec": 28.9115,
+     "end_sec": 29.9923
     },
     {
-     "start": 40.1331,
+     "start": 40.0622,
      "duration": 0.5,
      "pitch": 68,
-     "velocity": 85,
+     "velocity": 87,
      "lyric": "城",
      "tone": 2,
-     "start_sec": 30.8921,
-     "end_sec": 31.3127
+     "start_sec": 30.8267,
+     "end_sec": 31.2691
     },
     {
-     "start": 40.5182,
-     "duration": 1.5,
+     "start": 40.6331,
+     "duration": 1.25,
      "pitch": 67,
-     "velocity": 84,
+     "velocity": 81,
      "lyric": "市",
      "tone": 4,
-     "start_sec": 31.242,
+     "start_sec": 31.3127,
+     "end_sec": 32.2357
+    },
+    {
+     "start": 41.7682,
+     "duration": 0.25,
+     "pitch": 65,
+     "velocity": 63,
+     "lyric": "",
+     "tone": 4,
+     "start_sec": 32.1651,
      "end_sec": 32.3245
     },
     {
      "start": 42.0202,
      "duration": 0.5,
-     "pitch": 67,
-     "velocity": 93,
+     "pitch": 68,
+     "velocity": 92,
      "lyric": "的",
      "tone": 5,
      "start_sec": 32.3263,
@@ -8398,8 +8398,8 @@
     {
      "start": 42.5683,
      "duration": 0.5,
-     "pitch": 68,
-     "velocity": 85,
+     "pitch": 67,
+     "velocity": 82,
      "lyric": "霓",
      "tone": 2,
      "start_sec": 32.8113,
@@ -8408,7 +8408,7 @@
     {
      "start": 43.1079,
      "duration": 0.25,
-     "pitch": 65,
+     "pitch": 67,
      "velocity": 73,
      "lyric": "",
      "tone": 2,
@@ -8418,7 +8418,7 @@
     {
      "start": 43.2444,
      "duration": 0.75,
-     "pitch": 67,
+     "pitch": 68,
      "velocity": 87,
      "lyric": "虹",
      "tone": 2,
@@ -8428,7 +8428,7 @@
     {
      "start": 43.9695,
      "duration": 0.25,
-     "pitch": 68,
+     "pitch": 65,
      "velocity": 78,
      "lyric": "",
      "tone": 2,
@@ -8438,7 +8438,7 @@
     {
      "start": 44.2043,
      "duration": 1.25,
-     "pitch": 70,
+     "pitch": 67,
      "velocity": 92,
      "lyric": "还",
      "tone": 2,
@@ -8528,7 +8528,7 @@
     {
      "start": 50.4524,
      "duration": 0.75,
-     "pitch": 72,
+     "pitch": 68,
      "velocity": 83,
      "lyric": "夜",
      "tone": 4,
@@ -8538,7 +8538,7 @@
     {
      "start": 51.2152,
      "duration": 0.25,
-     "pitch": 70,
+     "pitch": 67,
      "velocity": 65,
      "lyric": "",
      "tone": 4,
@@ -8548,7 +8548,7 @@
     {
      "start": 51.5002,
      "duration": 0.5,
-     "pitch": 73,
+     "pitch": 70,
      "velocity": 88,
      "lyric": "依",
      "tone": 1,
@@ -8557,99 +8557,99 @@
     },
     {
      "start": 51.9927,
-     "duration": 0.25,
-     "pitch": 67,
-     "velocity": 84,
-     "lyric": "",
-     "tone": 2,
-     "start_sec": 39.9955,
-     "end_sec": 40.224
-    },
-    {
-     "start": 52.1052,
-     "duration": 1.25,
+     "duration": 1.5,
      "pitch": 68,
-     "velocity": 98,
+     "velocity": 95,
      "lyric": "然",
      "tone": 2,
-     "start_sec": 40.0971,
-     "end_sec": 41.0971
+     "start_sec": 39.9955,
+     "end_sec": 41.224
     },
     {
-     "start": 53.4361,
+     "start": 53.3552,
      "duration": 0.5,
      "pitch": 70,
-     "velocity": 82,
+     "velocity": 84,
      "lyric": "呼",
      "tone": 1,
-     "start_sec": 41.1718,
-     "end_sec": 41.4992
+     "start_sec": 41.0971,
+     "end_sec": 41.4493
     },
     {
-     "start": 53.9759,
+     "start": 53.9361,
      "duration": 1.0,
-     "pitch": 68,
-     "velocity": 94,
+     "pitch": 65,
+     "velocity": 92,
      "lyric": "啸",
      "tone": 4,
-     "start_sec": 41.5236,
-     "end_sec": 42.2928
+     "start_sec": 41.4992,
+     "end_sec": 42.2684
     },
     {
-     "start": 55.9687,
+     "start": 55.9759,
      "duration": 0.25,
-     "pitch": 63,
-     "velocity": 80,
+     "pitch": 60,
+     "velocity": 83,
      "lyric": "",
      "tone": 3,
-     "start_sec": 43.0576,
-     "end_sec": 43.2788
+     "start_sec": 43.0621,
+     "end_sec": 43.2854
     },
     {
-     "start": 56.3,
+     "start": 56.2187,
      "duration": 0.75,
-     "pitch": 67,
-     "velocity": 94,
+     "pitch": 63,
+     "velocity": 97,
      "lyric": "我",
      "tone": 3,
-     "start_sec": 43.3539,
-     "end_sec": 43.8923
+     "start_sec": 43.2788,
+     "end_sec": 43.8269
     },
     {
-     "start": 57.0556,
+     "start": 57.05,
      "duration": 0.5,
-     "pitch": 68,
-     "velocity": 91,
-     "lyric": "常",
-     "tone": 2,
-     "start_sec": 43.8975,
-     "end_sec": 44.3419
-    },
-    {
-     "start": 57.4397,
-     "duration": 1.0,
      "pitch": 67,
-     "velocity": 89,
+     "velocity": 88,
      "lyric": "常",
      "tone": 2,
-     "start_sec": 44.2521,
-     "end_sec": 45.0213
+     "start_sec": 43.8923,
+     "end_sec": 44.3385
     },
     {
-     "start": 58.5707,
-     "duration": 1.5,
+     "start": 57.5556,
+     "duration": 1.0,
+     "pitch": 68,
+     "velocity": 85,
+     "lyric": "常",
+     "tone": 2,
+     "start_sec": 44.3419,
+     "end_sec": 45.1112
+    },
+    {
+     "start": 58.4397,
+     "duration": 1.25,
      "pitch": 70,
-     "velocity": 93,
+     "velocity": 91,
      "lyric": "在",
      "tone": 4,
-     "start_sec": 45.1205,
+     "start_sec": 45.0213,
+     "end_sec": 45.9629
+    },
+    {
+     "start": 59.8207,
+     "duration": 0.25,
+     "pitch": 68,
+     "velocity": 73,
+     "lyric": "",
+     "tone": 4,
+     "start_sec": 46.0435,
      "end_sec": 46.2192
     },
     {
      "start": 60.0013,
      "duration": 0.5,
      "pitch": 70,
-     "velocity": 103,
+     "velocity": 95,
      "lyric": "屏",
      "tone": 2,
      "start_sec": 46.155,
@@ -8669,7 +8669,7 @@
      "start": 61.0935,
      "duration": 0.5,
      "pitch": 72,
-     "velocity": 91,
+     "velocity": 96,
      "lyric": "前",
      "tone": 2,
      "start_sec": 47.0094,
@@ -8679,7 +8679,7 @@
      "start": 61.5114,
      "duration": 1.5,
      "pitch": 70,
-     "velocity": 96,
+     "velocity": 93,
      "lyric": "想",
      "tone": 3,
      "start_sec": 47.3916,
@@ -8687,49 +8687,49 @@
     },
     {
      "start": 62.955,
-     "duration": 1.0,
-     "pitch": 68,
-     "velocity": 97,
-     "lyric": "起",
-     "tone": 3,
-     "start_sec": 48.4338,
-     "end_sec": 49.2031
-    },
-    {
-     "start": 64.0153,
-     "duration": 0.5,
-     "pitch": 72,
-     "velocity": 99,
-     "lyric": "你",
-     "tone": 3,
-     "start_sec": 49.2449,
-     "end_sec": 49.7017
-    },
-    {
-     "start": 64.5085,
      "duration": 0.25,
-     "pitch": 68,
-     "velocity": 83,
+     "pitch": 67,
+     "velocity": 77,
      "lyric": "",
      "tone": 3,
-     "start_sec": 49.6975,
-     "end_sec": 49.8514
+     "start_sec": 48.4338,
+     "end_sec": 48.6507
     },
     {
-     "start": 64.818,
+     "start": 63.2653,
      "duration": 0.75,
+     "pitch": 70,
+     "velocity": 91,
+     "lyric": "起",
+     "tone": 3,
+     "start_sec": 48.7064,
+     "end_sec": 49.2449
+    },
+    {
+     "start": 64.0085,
+     "duration": 0.5,
+     "pitch": 70,
+     "velocity": 103,
+     "lyric": "你",
+     "tone": 3,
+     "start_sec": 49.2386,
+     "end_sec": 49.6975
+    },
+    {
+     "start": 64.568,
+     "duration": 1.0,
      "pitch": 72,
      "velocity": 97,
      "lyric": "想",
      "tone": 3,
-     "start_sec": 49.888,
+     "start_sec": 49.7341,
      "end_sec": 50.5034
     },
     {
      "start": 65.4583,
      "duration": 1.0,
      "pitch": 70,
-     "velocity": 94,
+     "velocity": 98,
      "lyric": "起",
      "tone": 3,
      "start_sec": 50.423,
@@ -8739,7 +8739,7 @@
      "start": 66.5679,
      "duration": 0.5,
      "pitch": 70,
-     "velocity": 90,
+     "velocity": 94,
      "lyric": "我",
      "tone": 3,
      "start_sec": 51.2725,
@@ -8749,7 +8749,7 @@
      "start": 66.9744,
      "duration": 1.0,
      "pitch": 72,
-     "velocity": 91,
+     "velocity": 90,
      "lyric": "们",
      "tone": 5,
      "start_sec": 51.5227,
@@ -8769,7 +8769,7 @@
      "start": 68.975,
      "duration": 0.5,
      "pitch": 72,
-     "velocity": 90,
+     "velocity": 94,
      "lyric": "起",
      "tone": 3,
      "start_sec": 53.0615,
@@ -8777,39 +8777,39 @@
     },
     {
      "start": 69.5066,
-     "duration": 0.25,
-     "pitch": 67,
-     "velocity": 78,
-     "lyric": "",
-     "tone": 3,
-     "start_sec": 53.5425,
-     "end_sec": 53.6964
-    },
-    {
-     "start": 69.7808,
-     "duration": 0.75,
+     "duration": 1.0,
      "pitch": 70,
      "velocity": 92,
      "lyric": "走",
      "tone": 3,
-     "start_sec": 53.7112,
-     "end_sec": 54.3266
+     "start_sec": 53.5425,
+     "end_sec": 54.3117
     },
     {
-     "start": 70.4802,
-     "duration": 1.5,
+     "start": 70.5308,
+     "duration": 1.25,
      "pitch": 72,
-     "velocity": 92,
+     "velocity": 90,
      "lyric": "过",
      "tone": 4,
-     "start_sec": 54.2894,
+     "start_sec": 54.3266,
+     "end_sec": 55.2497
+    },
+    {
+     "start": 71.7302,
+     "duration": 0.25,
+     "pitch": 70,
+     "velocity": 72,
+     "lyric": "",
+     "tone": 4,
+     "start_sec": 55.2186,
      "end_sec": 55.3724
     },
     {
      "start": 71.8722,
      "duration": 0.5,
      "pitch": 73,
-     "velocity": 104,
+     "velocity": 99,
      "lyric": "的",
      "tone": 5,
      "start_sec": 55.306,
@@ -8839,7 +8839,7 @@
      "start": 74.0112,
      "duration": 1.0,
      "pitch": 75,
-     "velocity": 98,
+     "velocity": 101,
      "lyric": "河",
      "tone": 2,
      "start_sec": 56.9334,
@@ -8879,7 +8879,7 @@
      "start": 81.0173,
      "duration": 2.0,
      "pitch": 70,
-     "velocity": 79,
+     "velocity": 86,
      "lyric": "吗",
      "tone": 5,
      "start_sec": 62.3236,
@@ -8887,99 +8887,99 @@
     },
     {
      "start": 83.9797,
-     "duration": 0.75,
-     "pitch": 70,
-     "velocity": 82,
+     "duration": 1.0,
+     "pitch": 68,
+     "velocity": 85,
      "lyric": "那",
      "tone": 4,
      "start_sec": 64.6029,
-     "end_sec": 65.2183
+     "end_sec": 65.3721
     },
     {
-     "start": 84.658,
-     "duration": 0.25,
+     "start": 84.908,
+     "duration": 1.0,
      "pitch": 68,
+     "velocity": 75,
+     "lyric": "些",
+     "tone": 1,
+     "start_sec": 65.328,
+     "end_sec": 66.0972
+    },
+    {
+     "start": 85.9462,
+     "duration": 1.0,
+     "pitch": 64,
+     "velocity": 89,
+     "lyric": "没",
+     "tone": 2,
+     "start_sec": 66.1208,
+     "end_sec": 66.89
+    },
+    {
+     "start": 87.0132,
+     "duration": 0.5,
+     "pitch": 68,
+     "velocity": 79,
+     "lyric": "说",
+     "tone": 1,
+     "start_sec": 66.9353,
+     "end_sec": 67.3928
+    },
+    {
+     "start": 87.4642,
+     "duration": 0.25,
+     "pitch": 65,
+     "velocity": 66,
+     "lyric": "",
+     "tone": 2,
+     "start_sec": 67.3515,
+     "end_sec": 67.5164
+    },
+    {
+     "start": 87.7584,
+     "duration": 0.75,
+     "pitch": 67,
+     "velocity": 80,
+     "lyric": "完",
+     "tone": 2,
+     "start_sec": 67.5436,
+     "end_sec": 68.159
+    },
+    {
+     "start": 88.5294,
+     "duration": 1.0,
+     "pitch": 68,
+     "velocity": 75,
+     "lyric": "的",
+     "tone": 5,
+     "start_sec": 68.1719,
+     "end_sec": 68.9412
+    },
+    {
+     "start": 89.4991,
+     "duration": 0.75,
+     "pitch": 68,
+     "velocity": 82,
+     "lyric": "话",
+     "tone": 4,
+     "start_sec": 68.9222,
+     "end_sec": 69.4607
+    },
+    {
+     "start": 90.2418,
+     "duration": 0.25,
+     "pitch": 67,
      "velocity": 64,
      "lyric": "",
      "tone": 4,
-     "start_sec": 65.1741,
-     "end_sec": 65.328
-    },
-    {
-     "start": 84.9462,
-     "duration": 1.0,
-     "pitch": 72,
-     "velocity": 79,
-     "lyric": "些",
-     "tone": 1,
-     "start_sec": 65.3515,
-     "end_sec": 66.1208
-    },
-    {
-     "start": 86.0132,
-     "duration": 1.0,
-     "pitch": 70,
-     "velocity": 90,
-     "lyric": "没",
-     "tone": 2,
-     "start_sec": 66.1661,
-     "end_sec": 66.9353
-    },
-    {
-     "start": 86.9642,
-     "duration": 0.5,
-     "pitch": 73,
-     "velocity": 76,
-     "lyric": "说",
-     "tone": 1,
-     "start_sec": 66.901,
-     "end_sec": 67.3515
-    },
-    {
-     "start": 87.5084,
-     "duration": 0.25,
-     "pitch": 68,
-     "velocity": 60,
-     "lyric": "",
-     "tone": 2,
-     "start_sec": 67.3898,
-     "end_sec": 67.5436
-    },
-    {
-     "start": 87.7794,
-     "duration": 0.75,
-     "pitch": 70,
-     "velocity": 74,
-     "lyric": "完",
-     "tone": 2,
-     "start_sec": 67.5565,
-     "end_sec": 68.1719
-    },
-    {
-     "start": 88.4991,
-     "duration": 1.0,
-     "pitch": 68,
-     "velocity": 82,
-     "lyric": "的",
-     "tone": 5,
-     "start_sec": 68.153,
-     "end_sec": 68.9222
-    },
-    {
-     "start": 89.4918,
-     "duration": 1.0,
-     "pitch": 67,
-     "velocity": 74,
-     "lyric": "话",
-     "tone": 4,
-     "start_sec": 68.9155,
+     "start_sec": 69.454,
      "end_sec": 69.6847
     },
     {
      "start": 90.5855,
      "duration": 1.0,
-     "pitch": 68,
-     "velocity": 73,
+     "pitch": 67,
+     "velocity": 80,
      "lyric": "是",
      "tone": 4,
      "start_sec": 69.7449,
@@ -8988,8 +8988,8 @@
     {
      "start": 91.5661,
      "duration": 0.5,
-     "pitch": 67,
-     "velocity": 80,
+     "pitch": 65,
+     "velocity": 73,
      "lyric": "否",
      "tone": 3,
      "start_sec": 70.5022,
@@ -8998,8 +8998,8 @@
     {
      "start": 92.0448,
      "duration": 0.25,
-     "pitch": 67,
-     "velocity": 74,
+     "pitch": 65,
+     "velocity": 71,
      "lyric": "",
      "tone": 2,
      "start_sec": 70.8106,
@@ -9008,8 +9008,8 @@
     {
      "start": 92.3117,
      "duration": 0.75,
-     "pitch": 68,
-     "velocity": 88,
+     "pitch": 67,
+     "velocity": 85,
      "lyric": "还",
      "tone": 2,
      "start_sec": 71.0569,
@@ -9018,8 +9018,8 @@
     {
      "start": 93.0128,
      "duration": 0.5,
-     "pitch": 67,
-     "velocity": 72,
+     "pitch": 68,
+     "velocity": 77,
      "lyric": "在",
      "tone": 4,
      "start_sec": 71.5503,
@@ -9027,343 +9027,383 @@
     },
     {
      "start": 93.5966,
-     "duration": 1.5,
+     "duration": 0.25,
      "pitch": 63,
-     "velocity": 75,
-     "lyric": "等",
+     "velocity": 65,
+     "lyric": "",
      "tone": 3,
      "start_sec": 72.0594,
-     "end_sec": 73.1661
+     "end_sec": 72.2133
     },
     {
-     "start": 94.9316,
-     "duration": 0.5,
+     "start": 93.6816,
+     "duration": 1.25,
      "pitch": 67,
      "velocity": 79,
+     "lyric": "等",
+     "tone": 3,
+     "start_sec": 72.1118,
+     "end_sec": 73.0348
+    },
+    {
+     "start": 95.0014,
+     "duration": 0.5,
+     "pitch": 68,
+     "velocity": 71,
      "lyric": "待",
      "tone": 4,
-     "start_sec": 73.0348,
-     "end_sec": 73.4753
+     "start_sec": 73.0782,
+     "end_sec": 73.5393
     },
     {
-     "start": 95.5014,
+     "start": 95.5044,
      "duration": 1.0,
-     "pitch": 68,
-     "velocity": 79,
+     "pitch": 70,
+     "velocity": 75,
      "lyric": "一",
      "tone": 1,
-     "start_sec": 73.5393,
-     "end_sec": 74.3086
+     "start_sec": 73.5412,
+     "end_sec": 74.3104
     },
     {
-     "start": 96.5044,
+     "start": 96.4787,
      "duration": 1.0,
-     "pitch": 67,
-     "velocity": 74,
-     "lyric": "个",
-     "tone": 4,
-     "start_sec": 74.3104,
-     "end_sec": 75.0797
-    },
-    {
-     "start": 97.4787,
-     "duration": 0.5,
      "pitch": 67,
      "velocity": 71,
+     "lyric": "个",
+     "tone": 4,
+     "start_sec": 74.288,
+     "end_sec": 75.0573
+    },
+    {
+     "start": 97.5691,
+     "duration": 0.5,
+     "pitch": 67,
+     "velocity": 79,
      "lyric": "答",
      "tone": 2,
-     "start_sec": 75.0573,
-     "end_sec": 75.3715
+     "start_sec": 75.1194,
+     "end_sec": 75.4484
     },
     {
-     "start": 98.0691,
-     "duration": 1.0,
+     "start": 98.0342,
+     "duration": 0.75,
      "pitch": 67,
-     "velocity": 81,
+     "velocity": 80,
      "lyric": "案",
      "tone": 4,
-     "start_sec": 75.4484,
-     "end_sec": 76.2176
+     "start_sec": 75.4162,
+     "end_sec": 76.021
     },
     {
-     "start": 100.0342,
-     "duration": 1.0,
+     "start": 98.7028,
+     "duration": 0.25,
+     "pitch": 65,
+     "velocity": 62,
+     "lyric": "",
+     "tone": 4,
+     "start_sec": 75.9709,
+     "end_sec": 76.1248
+    },
+    {
+     "start": 99.9461,
+     "duration": 0.25,
+     "pitch": 63,
+     "velocity": 65,
+     "lyric": "",
+     "tone": 2,
+     "start_sec": 76.8899,
+     "end_sec": 77.1041
+    },
+    {
+     "start": 100.2268,
+     "duration": 0.75,
      "pitch": 64,
-     "velocity": 80,
+     "velocity": 79,
      "lyric": "如",
      "tone": 2,
-     "start_sec": 76.9546,
-     "end_sec": 77.7239
+     "start_sec": 77.1324,
+     "end_sec": 77.678
     },
     {
-     "start": 100.9528,
+     "start": 101.0118,
      "duration": 0.5,
-     "pitch": 63,
-     "velocity": 76,
+     "pitch": 61,
+     "velocity": 78,
      "lyric": "果",
      "tone": 3,
-     "start_sec": 77.6632,
-     "end_sec": 78.1102
+     "start_sec": 77.7032,
+     "end_sec": 78.1611
     },
     {
-     "start": 101.4461,
+     "start": 101.5706,
      "duration": 1.0,
-     "pitch": 65,
-     "velocity": 76,
+     "pitch": 61,
+     "velocity": 79,
      "lyric": "有",
      "tone": 3,
-     "start_sec": 78.1041,
-     "end_sec": 78.8733
+     "start_sec": 78.1973,
+     "end_sec": 78.9665
     },
     {
-     "start": 102.4768,
+     "start": 102.4294,
      "duration": 1.0,
-     "pitch": 70,
-     "velocity": 81,
+     "pitch": 68,
+     "velocity": 77,
      "lyric": "一",
      "tone": 1,
-     "start_sec": 78.9016,
-     "end_sec": 79.6709
+     "start_sec": 78.8579,
+     "end_sec": 79.6271
     },
     {
-     "start": 103.5118,
+     "start": 103.507,
      "duration": 0.5,
-     "pitch": 70,
+     "pitch": 67,
      "velocity": 77,
      "lyric": "天",
      "tone": 1,
-     "start_sec": 79.6996,
-     "end_sec": 80.0109
+     "start_sec": 79.6966,
+     "end_sec": 80.0064
     },
     {
-     "start": 104.0706,
+     "start": 104.0097,
      "duration": 0.5,
-     "pitch": 68,
-     "velocity": 89,
+     "pitch": 65,
+     "velocity": 88,
      "lyric": "你",
      "tone": 3,
-     "start_sec": 80.0652,
-     "end_sec": 80.505
+     "start_sec": 80.0089,
+     "end_sec": 80.4675
     },
     {
-     "start": 104.4294,
-     "duration": 0.25,
-     "pitch": 68,
-     "velocity": 63,
-     "lyric": "",
-     "tone": 2,
-     "start_sec": 80.3964,
-     "end_sec": 80.5719
-    },
-    {
-     "start": 104.757,
-     "duration": 0.75,
-     "pitch": 70,
-     "velocity": 77,
+     "start": 104.4947,
+     "duration": 1.0,
+     "pitch": 67,
+     "velocity": 76,
      "lyric": "回",
      "tone": 2,
-     "start_sec": 80.6197,
-     "end_sec": 81.2351
+     "start_sec": 80.4566,
+     "end_sec": 81.2259
     },
     {
-     "start": 105.5097,
-     "duration": 1.0,
-     "pitch": 72,
-     "velocity": 80,
+     "start": 105.5464,
+     "duration": 0.25,
+     "pitch": 68,
+     "velocity": 64,
+     "lyric": "",
+     "tone": 2,
+     "start_sec": 81.2593,
+     "end_sec": 81.4131
+    },
+    {
+     "start": 105.764,
+     "duration": 0.75,
+     "pitch": 70,
+     "velocity": 78,
      "lyric": "来",
      "tone": 2,
-     "start_sec": 81.2367,
-     "end_sec": 82.006
+     "start_sec": 81.3933,
+     "end_sec": 82.0086
     },
     {
-     "start": 106.4947,
+     "start": 106.5495,
      "duration": 0.5,
      "pitch": 68,
-     "velocity": 84,
+     "velocity": 78,
      "lyric": "我",
      "tone": 3,
-     "start_sec": 81.9951,
-     "end_sec": 82.3044
+     "start_sec": 82.0305,
+     "end_sec": 82.3534
     },
     {
-     "start": 107.0464,
+     "start": 106.9964,
      "duration": 1.5,
      "pitch": 72,
-     "velocity": 84,
+     "velocity": 77,
      "lyric": "会",
      "tone": 4,
-     "start_sec": 82.3505,
-     "end_sec": 83.567
+     "start_sec": 82.3055,
+     "end_sec": 83.5352
     },
     {
-     "start": 108.514,
+     "start": 108.5044,
      "duration": 1.0,
      "pitch": 73,
-     "velocity": 77,
+     "velocity": 82,
      "lyric": "在",
      "tone": 4,
-     "start_sec": 83.5471,
-     "end_sec": 84.3163
+     "start_sec": 83.5412,
+     "end_sec": 84.3104
     },
     {
-     "start": 109.5495,
+     "start": 109.5827,
      "duration": 0.5,
-     "pitch": 72,
-     "velocity": 82,
+     "pitch": 68,
+     "velocity": 78,
      "lyric": "老",
      "tone": 3,
-     "start_sec": 84.3382,
-     "end_sec": 84.6611
+     "start_sec": 84.3586,
+     "end_sec": 84.6917
     },
     {
-     "start": 109.9964,
+     "start": 110.0561,
      "duration": 0.75,
-     "pitch": 73,
-     "velocity": 90,
+     "pitch": 71,
+     "velocity": 91,
      "lyric": "地",
      "tone": 4,
-     "start_sec": 84.6132,
-     "end_sec": 85.2286
+     "start_sec": 84.6672,
+     "end_sec": 85.2653
     },
     {
-     "start": 110.7544,
+     "start": 110.7111,
      "duration": 0.25,
-     "pitch": 72,
-     "velocity": 72,
+     "pitch": 68,
+     "velocity": 73,
      "lyric": "",
      "tone": 4,
-     "start_sec": 85.2335,
-     "end_sec": 85.3887
+     "start_sec": 85.2068,
+     "end_sec": 85.3607
     },
     {
-     "start": 111.0827,
+     "start": 110.9932,
      "duration": 0.5,
-     "pitch": 75,
-     "velocity": 77,
+     "pitch": 73,
+     "velocity": 84,
      "lyric": "方",
      "tone": 1,
-     "start_sec": 85.4609,
-     "end_sec": 85.897
+     "start_sec": 85.3805,
+     "end_sec": 85.8399
     },
     {
-     "start": 111.5561,
+     "start": 111.468,
      "duration": 1.0,
-     "pitch": 73,
-     "velocity": 81,
+     "pitch": 68,
+     "velocity": 77,
      "lyric": "煮",
      "tone": 3,
-     "start_sec": 85.8807,
-     "end_sec": 86.6499
+     "start_sec": 85.8166,
+     "end_sec": 86.5858
     },
     {
-     "start": 112.4611,
+     "start": 112.5553,
      "duration": 1.0,
-     "pitch": 75,
-     "velocity": 81,
+     "pitch": 72,
+     "velocity": 78,
      "lyric": "一",
      "tone": 1,
-     "start_sec": 86.5794,
-     "end_sec": 87.3487
+     "start_sec": 86.6494,
+     "end_sec": 87.4186
     },
     {
-     "start": 113.4932,
+     "start": 113.476,
      "duration": 0.5,
-     "pitch": 72,
+     "pitch": 70,
      "velocity": 78,
      "lyric": "壶",
      "tone": 2,
-     "start_sec": 87.3784,
-     "end_sec": 87.6882
+     "start_sec": 87.3624,
+     "end_sec": 87.6775
     },
     {
-     "start": 113.968,
-     "duration": 1.0,
+     "start": 114.0356,
+     "duration": 0.25,
+     "pitch": 67,
+     "velocity": 73,
+     "lyric": "",
+     "tone": 2,
+     "start_sec": 87.7251,
+     "end_sec": 87.9559
+    },
+    {
+     "start": 114.2798,
+     "duration": 0.75,
      "pitch": 68,
-     "velocity": 91,
+     "velocity": 87,
      "lyric": "茶",
      "tone": 2,
-     "start_sec": 87.6726,
-     "end_sec": 88.4418
+     "start_sec": 87.9506,
+     "end_sec": 88.489
     },
     {
-     "start": 116.0553,
+     "start": 116.0342,
      "duration": 1.5,
      "pitch": 65,
      "velocity": 80,
      "lyric": "愿",
      "tone": 4,
-     "start_sec": 89.2818,
-     "end_sec": 90.4956
+     "start_sec": 89.2623,
+     "end_sec": 90.4826
     },
     {
-     "start": 117.476,
+     "start": 117.4529,
      "duration": 0.5,
      "pitch": 63,
      "velocity": 77,
      "lyric": "你",
      "tone": 3,
-     "start_sec": 90.4394,
-     "end_sec": 90.7544
+     "start_sec": 90.418,
+     "end_sec": 90.7402
     },
     {
-     "start": 118.0356,
+     "start": 117.9758,
      "duration": 0.5,
-     "pitch": 67,
+     "pitch": 68,
      "velocity": 85,
      "lyric": "平",
      "tone": 2,
-     "start_sec": 90.8021,
-     "end_sec": 91.2526
+     "start_sec": 90.7543,
+     "end_sec": 91.2084
     },
     {
-     "start": 118.5298,
+     "start": 118.5324,
      "duration": 1.0,
      "pitch": 72,
      "velocity": 76,
      "lyric": "安",
      "tone": 1,
-     "start_sec": 91.2491,
-     "end_sec": 92.0183
+     "start_sec": 91.2507,
+     "end_sec": 92.02
     },
     {
-     "start": 119.5342,
+     "start": 119.6377,
      "duration": 1.0,
      "pitch": 70,
      "velocity": 81,
      "lyric": "愿",
      "tone": 4,
-     "start_sec": 92.021,
-     "end_sec": 92.7903
+     "start_sec": 92.0847,
+     "end_sec": 92.854
     },
     {
-     "start": 120.4529,
+     "start": 120.5345,
      "duration": 0.5,
      "pitch": 68,
      "velocity": 79,
      "lyric": "你",
      "tone": 3,
-     "start_sec": 92.7257,
-     "end_sec": 93.0479
+     "start_sec": 92.7905,
+     "end_sec": 93.1088
     },
     {
-     "start": 120.9758,
+     "start": 120.987,
      "duration": 1.0,
      "pitch": 72,
      "velocity": 79,
      "lyric": "温",
      "tone": 1,
-     "start_sec": 93.062,
-     "end_sec": 93.8312
+     "start_sec": 93.0689,
+     "end_sec": 93.8382
     },
     {
-     "start": 122.0324,
+     "start": 122.0399,
      "duration": 1.0,
-     "pitch": 68,
+     "pitch": 70,
      "velocity": 83,
      "lyric": "暖",
      "tone": 3,
-     "start_sec": 93.8761,
-     "end_sec": 94.6453
+     "start_sec": 93.883,
+     "end_sec": 94.6522
     }
    ]
   },

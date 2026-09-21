@@ -212,6 +212,7 @@ class HarmonyOptions:
     tritone: float = 0.0           # tritone substitution of V7
     cadence: str = "authentic"     # authentic | plagal | deceptive | half | picardy | none
     sus: float = 0.0               # sus2/sus4 colour on tonic chords
+    diminished: bool = True        # allow ii° / vii° (groove styles turn this off)
 
 
 def _add_seventh(numeral: str, family: str, rng: random.Random, opts: HarmonyOptions) -> str:
@@ -255,10 +256,20 @@ def generate_functional(mode: str, rng: random.Random, opts: Optional[HarmonyOpt
         elif opts.cadence == "picardy":
             states[-2:] = ["D", "T"]
     numerals: List[str] = []
+    mixture_used = False
     for i, st in enumerate(states):
         choices = list(funcs[st])
+        prev_state = states[i - 1] if i > 0 else None
+        # Modal mixture: borrowed subdominants anywhere; a borrowed *tonic*
+        # (bIII / bVI) only once and only after a subdominant, never as the
+        # resolution of a dominant.
         if rng.random() < opts.mixture and st in _MIXTURE[family]:
-            choices = _MIXTURE[family][st]
+            if st != "T" or (prev_state == "S" and not mixture_used):
+                choices = _MIXTURE[family][st]
+                if st == "T":
+                    mixture_used = True
+        if not opts.diminished:
+            choices = [c for c in choices if "°" not in c] or (["iv"] if family == "minor" else ["IV"])
         numeral = rng.choice(choices)
         if numerals and len(set(choices)) > 1:
             tries = 0

@@ -184,6 +184,21 @@ class Chord:
                 out.append(pc)
         return out
 
+    def voicing_pcs(self, max_voices: int = 4) -> List[int]:
+        """Pitch classes to voice in the pad/keys. Extended chords drop the
+        fifth first and then the root (the bass supplies it), the way jazz
+        and neo-soul keyboard voicings do, so 9th/13th chords never become
+        five-note clusters."""
+        pcs = self.pcs
+        if len(pcs) <= max_voices:
+            return pcs
+        fifth = self.fifth
+        if fifth is not None and len(pcs) > max_voices:
+            pcs = [pc for pc in pcs if pc != fifth]
+        if len(pcs) > max_voices:
+            pcs = pcs[1:]
+        return pcs[:max_voices]
+
     @property
     def third(self) -> Optional[int]:
         for i in self.intervals:
@@ -298,7 +313,7 @@ def _nearest_octave(pc: int, target: int, low: int, high: int) -> int:
 
 def close_voicing(chord: Chord, low: int = 48, high: int = 72, max_voices: int = 4) -> List[int]:
     """Stack the chord's pitch classes in close position starting near ``low``."""
-    pcs = chord.pcs[:max_voices]
+    pcs = chord.voicing_pcs(max_voices)
     root = low + ((pcs[0] - low) % 12)
     voicing = [root]
     for pc in pcs[1:]:
@@ -319,7 +334,7 @@ def voice_lead(prev: Optional[Sequence[int]], chord: Chord, low: int = 48, high:
     Returns MIDI pitches sorted ascending. Every pitch class of the chord (up to
     ``max_voices``) is present exactly once.
     """
-    pcs = chord.pcs[:max_voices]
+    pcs = chord.voicing_pcs(max_voices)
     if not prev:
         return close_voicing(chord, low, high, max_voices)
     prev = sorted(prev)

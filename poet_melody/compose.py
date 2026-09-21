@@ -30,7 +30,7 @@ from .analysis import TextFeatures, analyze
 from .interpret import Interpretation, interpret
 from .melody import (LinePlan, MelodyConfig, MelodyState, PhrasePlan, head_motif, plan_rhythm, sing_line)
 from .midi import DRUM_NOTES
-from .progressions import HarmonyOptions, generate_functional, pick_progression
+from .progressions import HarmonyOptions, generate_functional, library_for, pick_progression
 from .score import ChordEvent, Composition, Note, Section, Timeline, Track
 from .styles import STYLES, Style, choose_style
 from .synth import design_patches
@@ -310,6 +310,13 @@ def generate(text: str, style: str = "auto", seed: Optional[int] = None, title: 
         st = Style(**{**st.__dict__, "drums": "none"})
 
     colour_mode = mode or _choose_mode(f, st, rng)
+    # A style whose library only knows one mode family (trance is minor music)
+    # keeps the whole piece in that family instead of mixing parallel keys.
+    if not mode and not library_for(st.name, colour_mode) and library_for(st.name):
+        colour_mode = (st.minor_modes if is_major_like(colour_mode) else st.major_modes)[0]
+        notes_family = "minor" if not is_major_like(colour_mode) else "major"
+    else:
+        notes_family = None
     tonic = NOTE_TO_PC[key] if key else _choose_tonic(f, rng)
     prefer_flats = ((tonic if is_major_like(colour_mode) else (tonic + 3) % 12) in FLAT_KEYS)
     bpm = float(tempo) if tempo else round(st.tempo_range[0] + (st.tempo_range[1] - st.tempo_range[0]) * f.arousal + rng.uniform(-3, 3))
@@ -327,6 +334,8 @@ def generate(text: str, style: str = "auto", seed: Optional[int] = None, title: 
         form=interp.form, interpretation=interp.to_dict(),
     )
     notes_on_theory: List[str] = list(interp.notes)
+    if notes_family:
+        notes_on_theory.append(f"The {style_name} progression library is {notes_family}-only, so the piece stays in {colour_mode}.")
 
     # ---- Harmony per form letter ------------------------------------------------
     n_sections = len(f.stanzas)
@@ -381,11 +390,13 @@ def generate(text: str, style: str = "auto", seed: Optional[int] = None, title: 
             if label == "B":
                 p_mod = 0.75 if st.family == "classical" or st.name == "cinematic" else 0.35
                 if rng.random() < p_mod:
-                    modulated = True
                     if is_major_like(colour_mode):
-                        sec_tonic, sec_colour = (tonic + 9) % 12, st.minor_modes[0]
+                        cand_tonic, cand_colour = (tonic + 9) % 12, st.minor_modes[0]
                     else:
-                        sec_tonic, sec_colour = (tonic + 3) % 12, st.major_modes[0]
+                        cand_tonic, cand_colour = (tonic + 3) % 12, st.major_modes[0]
+                    # Only modulate when the style can actually play in the relative key.
+                    if library_for(st.name, cand_colour) or not library_for(st.name):
+                        sec_tonic, sec_colour, modulated = cand_tonic, cand_colour, True
             name, harm_mode, nums = _progression_for(st, sec_colour, f, rng, cadence, used_names, is_last)
             used_names.append(name)
             label_prog[label] = (name, harm_mode, nums, sec_tonic)

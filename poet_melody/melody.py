@@ -175,6 +175,30 @@ class MelodyState:
         self.prev_interval = 0
         self.prev_sign = 1
         self.repeats = 0
+        self.prev_nonchord = False      # the previous note was a non-chord tone (must resolve by step)
+
+
+def _avoid_notes(scale_pcs: Sequence[int], chord_pcs: Sequence[int]) -> set:
+    """Scale tones a semitone away from a chord tone that is *not* in the scale
+    (the b7 against a major V in minor, the natural 6 against a borrowed iv ...).
+    Singing them over that chord is the classic wrong-note clash."""
+    scale = set(scale_pcs)
+    out = set()
+    for ct in chord_pcs:
+        if ct in scale:
+            continue
+        for s_ in ((ct - 1) % 12, (ct + 1) % 12):
+            if s_ in scale:
+                out.add(s_)
+    return out
+
+
+def _stability(pc: int, chord_pcs: Sequence[int]) -> float:
+    """How restful a chord tone is: root/fifth > third > seventh > extensions."""
+    if pc not in chord_pcs:
+        return 0.0
+    idx = chord_pcs.index(pc)
+    return (1.0, 0.85, 1.0, 0.55, 0.35, 0.3)[idx] if idx < 6 else 0.3
 
 
 def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: int, cfg: MelodyConfig,
@@ -185,7 +209,7 @@ def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: i
     devices = set(phrase.devices)
     center = cfg.center + phrase.register_shift + (-3 if "night" in devices else 0) + (2 if "light" in devices else 0)
     lo, hi = center - cfg.span, center + cfg.span
-    amplitude = 5.0 + 7.0 * cfg.arousal
+    amplitude = 4.0 + 5.0 * cfg.arousal
     strong_beats = {0, 2} if beats_per_bar == 4 else {0}
     tones = list(phrase.tones) if phrase.tones else tones_of(line.syllables)
     zh = any(t for t in tones)
@@ -207,7 +231,7 @@ def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: i
             arc = 0.6 * arc + 0.4 * (1 - x)
         token = line.syllables[i]
         tone = tones[i] if i < len(tones) else 0
-        target = center + base_offset + (arc - 0.4) * amplitude + signature(token) * 0.6
+        target = center + base_offset + (arc - 0.4) * amplitude + signature(token) * 0.4
         if tone:
             target += (TONE_LEVEL[tone] - 0.55) * 4.0      # high tones sit higher, 上声 lower
         pos_in_bar = beat % beats_per_bar
@@ -219,16 +243,23 @@ def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: i
         if phrase.motif and i < len(phrase.motif) + 1 and i > 0 and state.prev_pitch is not None:
             motif_iv = phrase.motif[i - 1]
 
-        allowed = set(scale_pcs) | set(chord_pcs) if strong or last else set(scale_pcs)
+        avoid = _avoid_notes(scale_pcs, chord_pcs)
+        allowed = (set(scale_pcs) - avoid) | set(chord_pcs) if strong or last else (set(scale_pcs) - avoid)
         candidates = [p for p in range(lo, hi + 1) if p % 12 in allowed]
         best: Optional[Tuple[float, int]] = None
         for p in candidates:
             score = -abs(p - target)
             in_chord = p % 12 in chord_pcs
+            stab = _stability(p % 12, chord_pcs)
             if strong:
-                score += 3.0 if in_chord else -1.0
+                score += 3.2 * stab if in_chord else -1.0
             else:
-                score += 0.8 if in_chord else 0.0
+                score += 0.9 * stab if in_chord else 0.0
+            if not in_chord and any((p - ct) % 12 == 1 for ct in chord_pcs):
+                # A scale tone a semitone *above* a chord tone (the jazz "avoid
+                # note": 4 over a major triad, b9 over a dominant) is harsh unless
+                # it passes quickly.
+                score -= 1.5 + (1.5 if dur >= 1.0 else 0.0)
             if state.prev_pitch is not None:
                 d = abs(p - state.prev_pitch)
                 sgn = 1 if p > state.prev_pitch else (-1 if p < state.prev_pitch else 0)
@@ -238,6 +269,10 @@ def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: i
                     score -= 5.0 if "far" not in devices else 1.0
                 elif d > 4:
                     score -= 1.5 if "far" not in devices else -0.5
+                if d > 4 and state.prev_interval > 4 and sgn * state.prev_sign > 0:
+                    score -= 3.0                  # two leaps in the same direction
+                if state.prev_nonchord:
+                    score += 1.5 if d <= 2 else -2.0   # a non-chord tone resolves by step
                 if "flow" in devices and d > 2:
                     score -= 1.5
                 if d in (6, 10, 11):
@@ -263,11 +298,13 @@ def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: i
             else:
                 if not in_chord:
                     score -= 2.0
-            # Phrase endings.
+            # Phrase endings rest on triad tones, not on sevenths or extensions.
             if last:
                 deg = (p - tonic) % 12
                 root = chord.root if chord else tonic
                 third = chord.pcs[1] if chord and len(chord.pcs) > 1 else root
+                if in_chord and chord_pcs.index(p % 12) >= 3:
+                    score -= 2.0
                 if phrase.ending == "open":
                     if deg in (7, 2):
                         score += 2.5              # dominant / supertonic
@@ -303,6 +340,7 @@ def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: i
             state.prev_interval = abs(iv)
             state.prev_sign = 1 if iv > 0 else (-1 if iv < 0 else state.prev_sign)
         state.prev_pitch = pitch
+        state.prev_nonchord = pitch % 12 not in chord_pcs
         vel = (62 + int(34 * cfg.arousal) + (8 if strong else 0) + int(8 * arc) + phrase.velocity_shift
                + (-8 if "night" in devices else 0) + (6 if "light" in devices else 0) + line_rng.randint(-4, 4))
         vel = max(30, min(127, vel))

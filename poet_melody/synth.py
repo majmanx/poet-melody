@@ -162,7 +162,7 @@ def design_patches(f: TextFeatures, style: Style, rng: random.Random) -> Dict[st
         keys = Patch("Dusty Rhodes", "keys", oscs=[Osc("sine", 0, 0, 0.8), Osc("triangle", 1, 0, 0.35), Osc("sine", 2, 0, 0.12)],
                      cutoff=_lerp(1200, 2600, bright), resonance=0.1, filter_env_amount=1.2,
                      filter_env=Env(0.002, 0.5, 0.2, 0.5), amp_env=Env(0.004, 1.8, 0.35, 0.7), key_tracking=0.5,
-                     lfo_rate=4.2 if name != "lofi" else 0.3, lfo_depth=0.25 if name != "lofi" else 8,
+                     lfo_rate=4.2 if name != "lofi" else 0.3, lfo_depth=0.25 if name != "lofi" else 5,
                      lfo_target="amp" if name != "lofi" else "pitch", drive=0.25,
                      reverb_mix=0.28, reverb_size=reverb_size * 0.7, chorus=0.3, level=0.6)
     elif name == "house":
@@ -232,7 +232,9 @@ def design_patches(f: TextFeatures, style: Style, rng: random.Random) -> Dict[st
                      cutoff=lead_cut, resonance=0.2, filter_env_amount=1.0, filter_env=Env(0.01, 0.4, 0.5, 0.3),
                      amp_env=Env(0.01, 0.2, 0.8, 0.3), lfo_rate=vib_rate, lfo_depth=10, lfo_target="pitch", lfo_delay=0.25,
                      glide=0.04, drive=0.2, reverb_mix=0.3, reverb_size=reverb_size,
-                     delay_time=0.75, delay_feedback=0.4, delay_mix=0.3, level=0.6)
+                     # Echoes of a fast sung line smear against the next chord, so the
+                     # dotted-eighth delay backs off as the text gets denser.
+                     delay_time=0.75, delay_feedback=0.3, delay_mix=_lerp(0.3, 0.12, ar), level=0.6)
     elif name in ("lofi", "neo_soul", "jazz"):
         lead = Patch("Muted Horn" if name == "jazz" else "Soft Square", "lead",
                      oscs=[Osc("square", 0, 0, 0.5, 0.3), Osc("triangle", 0, 0, 0.5), Osc("sine", -1, 0, 0.2)],
