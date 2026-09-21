@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
-out/
+/out/
 *.egg-info/
 .pytest_cache/
 build/
