@@ -416,7 +416,9 @@ def generate(text: str, style: str = "auto", seed: Optional[int] = None, title: 
         for li, line in enumerate(stanza.lines):
             devices = reading.lines[li].devices if li < len(reading.lines) else []
             stretch = 1.35 if "still" in devices else 1.0
-            line_plans.append(plan_rhythm(line, bpb, f.arousal, f.irregularity, rng, stretch=stretch))
+            regular = 0.8 if st.family == "classical" else (0.6 if st.name in ("trance", "house", "pop") else 0.3)
+            line_plans.append(plan_rhythm(line, bpb, f.arousal, f.irregularity, rng, stretch=stretch,
+                                          tones=tones_of(line.syllables), regular=regular))
         total_bars = sum(p.bars for p in line_plans)
         cycle = len(nums) * st.bars_per_chord
         if total_bars <= cycle:
@@ -581,9 +583,13 @@ def generate(text: str, style: str = "auto", seed: Optional[int] = None, title: 
             drum_tr.notes = [n for n in drum_tr.notes if not in_span(n, a, b_)]
             keys_tr.notes = [n for n in keys_tr.notes if not in_span(n, a, b_)]
         if reading.role == "climax" and n_sections > 1 and st.keys != "none":
+            # Brighten the climax by doubling only the top voice an octave up.
+            by_start: Dict[float, Note] = {}
             for n in keys_tr.notes:
-                if in_span(n, a, b_):
-                    doubled.append(Note(n.start, n.duration, n.pitch + 12, max(20, n.velocity - 12)))
+                if in_span(n, a, b_) and (n.start not in by_start or n.pitch > by_start[n.start].pitch):
+                    by_start[n.start] = n
+            for n in by_start.values():
+                doubled.append(Note(n.start, n.duration, n.pitch + 12, max(20, n.velocity - 14)))
     keys_tr.notes += doubled
 
     if st.humanize > 0:

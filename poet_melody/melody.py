@@ -43,55 +43,149 @@ class LinePlan:
     bars: int
     onsets: List[float]        # beats relative to the line start
     durations: List[float]
+    breaks: List[int] = field(default_factory=list)   # syllable indices followed by a caesura
+
+
+_CAESURA_PUNCT = set("，、；：—…,;:")
+
+
+def caesura_points(line: Line) -> List[int]:
+    """Indices of syllables after which the line breathes (顿 / caesura).
+
+    Punctuation inside the line always breaks it. Classical Chinese metres
+    break where the reader does: 五言 as 2+3, 七言 as 4+3 (with a lighter
+    2+2+3). English lines break only at punctuation.
+    """
+    syls = line.syllables
+    n = len(syls)
+    points: List[int] = []
+    # Punctuation-driven breaks: walk the text and count syllables.
+    count = 0
+    zh = all(len(x) == 1 and "\u3400" <= x <= "\u9fff" for x in syls) if syls else False
+    if zh:
+        for ch in line.text:
+            if "\u3400" <= ch <= "\u9fff":
+                count += 1
+            elif ch in _CAESURA_PUNCT and 0 < count < n:
+                points.append(count - 1)
+    else:
+        import re as _re
+        for m in _re.finditer(r"[A-Za-z']+|\d|[，、；：—…,;:]", line.text):
+            tok = m.group(0)
+            if tok in _CAESURA_PUNCT:
+                if 0 < count < n:
+                    points.append(count - 1)
+            elif tok.isdigit():
+                count += 1
+            else:
+                count += len(english_syllable_count(tok))
+    if not points and zh:
+        if n == 5:
+            points = [1]
+        elif n == 7:
+            points = [3]
+        elif n == 4:
+            points = [1]
+        elif n == 6:
+            points = [1, 3]
+        elif n >= 8 and n % 2 == 0:
+            points = [n // 2 - 1]
+    return sorted(set(p for p in points if 0 <= p < n - 1))
+
+
+def english_syllable_count(word: str) -> List[str]:
+    from .analysis import english_syllables
+    return english_syllables(word)
 
 
 def plan_rhythm(line: Line, beats_per_bar: int, arousal: float, irregularity: float,
-                rng: random.Random, min_bars: int = 1, stretch: float = 1.0) -> LinePlan:
+                rng: random.Random, min_bars: int = 1, stretch: float = 1.0,
+                tones: Optional[Sequence[int]] = None, regular: float = 0.5) -> LinePlan:
     """Decide how many bars a line occupies and where its syllables fall.
-    ``stretch`` > 1 slows the line (word painting for stillness)."""
+
+    Rhythm follows the text's prosody: syllables before a caesura are
+    lengthened and followed by a breath; for Chinese, level tones (平: 阴平,
+    阳平) are long and oblique tones (仄: 上声, 去声) short — 平长仄短, the
+    rule of classical recitation. ``stretch`` > 1 slows the line (word
+    painting for stillness); ``regular`` (0..1) reduces syncopation.
+    """
     n = len(line.syllables)
-    # Beats per syllable: slow texts ~1 beat, energetic ~0.5 beat.
+    tones = list(tones) if tones else tones_of(line.syllables)
+    breaks = set(caesura_points(line))
+    # Relative duration weight per syllable.
+    weights: List[float] = []
+    for i in range(n):
+        w = 1.0
+        t = tones[i] if i < len(tones) else 0
+        if t in (1, 2):
+            w *= 1.2
+        elif t in (3, 4):
+            w *= 0.85
+        if i in breaks:
+            w *= 1.6
+        if i == n - 1:
+            w *= 1.5
+        weights.append(w)
+    wsum = sum(weights)
     base = (1.05 - 0.6 * arousal) * stretch
     tail = 1.0 if arousal < 0.5 else 0.5          # breath at the end of the phrase
-    bars = max(min_bars, math.ceil((n * base + tail) / beats_per_bar))
+    breath = 0.5 if arousal < 0.6 else 0.25       # breath after a caesura
+    need = wsum * base + tail + breath * len(breaks)
+    bars = max(min_bars, math.ceil(need / beats_per_bar))
     grid = 0.5 if arousal < 0.6 else 0.25
     total = bars * beats_per_bar
     avail = total - tail
-    while n * grid > avail:
+    while (n + len(breaks)) * grid > avail:
         if grid > 0.25:
             grid = 0.25
         else:
             bars += 1
             total = bars * beats_per_bar
             avail = total - tail
-    slots = int(round(avail / grid))
-    # Evenly spaced positions snapped to the grid ...
-    positions = sorted({min(slots - 1, int(round(i * slots / n))) for i in range(n)})
-    while len(positions) < n:  # collisions after rounding: fill the nearest free slot
-        free = [s for s in range(slots) if s not in positions]
-        positions.append(min(free, key=lambda s: min(abs(s - p) for p in positions)))
-        positions.sort()
-    # ... then jittered towards syncopation for irregular / energetic texts.
-    jitter = 0.1 + 0.35 * irregularity + 0.2 * arousal
+    # Allocate beats proportionally, breaths included, and snap to the grid.
+    sing = avail - breath * len(breaks)
+    onsets: List[float] = []
+    cursor = 0.0
+    for i in range(n):
+        onsets.append(round(cursor / grid) * grid)
+        cursor += weights[i] / wsum * sing
+        if i in breaks:
+            cursor += breath
+    # Repair collisions after rounding.
     for i in range(1, n):
+        if onsets[i] <= onsets[i - 1]:
+            onsets[i] = onsets[i - 1] + grid
+    while onsets and onsets[-1] > avail - grid:
+        onsets = [o - grid if k > 0 and onsets[k] > onsets[k - 1] + grid else o for k, o in enumerate(onsets)]
+        if onsets[-1] > avail - grid:
+            bars += 1
+            total = bars * beats_per_bar
+            avail = total - tail
+            break
+    # Light syncopation for irregular / energetic texts, never at a caesura.
+    jitter = (0.05 + 0.3 * irregularity + 0.2 * arousal) * (1.0 - regular)
+    for i in range(1, n):
+        if i - 1 in breaks or i in breaks:
+            continue
         if rng.random() < jitter:
-            cand = positions[i] + rng.choice((-1, 1))
-            lo = positions[i - 1] + 1
-            hi = positions[i + 1] - 1 if i + 1 < n else slots - 1
+            cand = onsets[i] + rng.choice((-grid, grid))
+            lo = onsets[i - 1] + grid
+            hi = onsets[i + 1] - grid if i + 1 < n else avail - grid
             if lo <= cand <= hi:
-                positions[i] = cand
-    positions[0] = 0
-    onsets = [p * grid for p in positions]
+                onsets[i] = cand
+    onsets[0] = 0.0
     durations: List[float] = []
     for i, on in enumerate(onsets):
         nxt = onsets[i + 1] if i + 1 < n else avail
         dur = nxt - on
+        if i in breaks:
+            dur = max(grid, dur - breath)          # the breath after the caesura
         if i + 1 < n:
             dur = min(dur, 2.0)
         else:
             dur = min(max(dur, 1.0), 3.0)   # phrase-final lengthening
         durations.append(dur)
-    return LinePlan(line, bars, onsets, durations)
+    return LinePlan(line, bars, onsets, durations, sorted(breaks))
 
 
 def phrase_arc(x: float, line: Line, ending: str) -> float:
@@ -160,10 +254,13 @@ def _chord_at(chords: Sequence[ChordEvent], beat: float) -> Optional[ChordEvent]
     return chords[-1] if chords else None
 
 
-def _scale_step_below(pitch: int, allowed: Sequence[int]) -> int:
-    for d in range(1, 4):
-        if (pitch - d) % 12 in allowed:
-            return pitch - d
+def _scale_step_below(pitch: int, allowed: Sequence[int], chord_pcs: Sequence[int] = ()) -> int:
+    """Nearest allowed pitch below ``pitch`` that is not a semitone above a
+    chord tone (grace notes land on the beat, so they must not clash)."""
+    for d in range(1, 5):
+        cand = pitch - d
+        if cand % 12 in allowed and not any((cand - ct) % 12 == 1 for ct in chord_pcs if cand % 12 not in chord_pcs):
+            return cand
     return pitch - 2
 
 
@@ -236,6 +333,9 @@ def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: i
             target += (TONE_LEVEL[tone] - 0.55) * 4.0      # high tones sit higher, 上声 lower
         pos_in_bar = beat % beats_per_bar
         strong = int(round(pos_in_bar * 4)) / 4 in strong_beats
+        chord_end = _chord_at(chords, beat + dur - 0.01)
+        next_chord = chord_end if (chord_end is not chord and chord is not None
+                                   and beat + dur - (chord.start + chord.duration) >= 0.5) else None
         last = i == n - 1
         first = i == 0
         want_dir = tone_direction(prev_tone, tone) if (zh and cfg.tone_weight > 0 and not first) else 0
@@ -298,6 +398,9 @@ def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: i
             else:
                 if not in_chord:
                     score -= 2.0
+            if i in plan.breaks:
+                # The lengthened syllable before a caesura rests on a chord tone.
+                score += 1.2 if in_chord else -1.2
             # Phrase endings rest on triad tones, not on sevenths or extensions.
             if last:
                 deg = (p - tonic) % 12
@@ -327,6 +430,13 @@ def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: i
                         score += 3.0
                 if "home" in devices and p % 12 == tonic:
                     score += 2.0
+            if next_chord is not None:
+                # The note is held into the next chord: it must belong there too.
+                npcs = next_chord.pcs
+                if p % 12 not in npcs:
+                    score -= 2.5
+                    if any((p - ct) % 12 == 1 for ct in npcs):
+                        score -= 3.0
             if p > center + 10 or p < center - 9:
                 score -= 3.0
             score += line_rng.random() * cfg.temperature
@@ -350,15 +460,15 @@ def sing_line(phrase: PhrasePlan, chords: Sequence[ChordEvent], beats_per_bar: i
             and line_rng.random() < cfg.ornament_prob
         if ornament_ok and tone in (2, 3):
             grace = min(0.25, dur / 3)
-            below = _scale_step_below(pitch, allowed)
+            below = _scale_step_below(pitch, allowed, chord_pcs)
             if tone == 3:
-                below = _scale_step_below(below, allowed)
+                below = _scale_step_below(below, allowed, chord_pcs)
             notes.append(Note(beat, grace, below, max(30, vel - 14), "", tone))
             notes.append(Note(beat + grace, dur - grace, pitch, vel, token, tone))
         elif ornament_ok and tone == 4:
             tail = min(0.25, dur / 3)
             notes.append(Note(beat, dur - tail, pitch, vel, token, tone))
-            notes.append(Note(beat + dur - tail, tail, _scale_step_below(pitch, allowed), max(30, vel - 18), "", tone))
+            notes.append(Note(beat + dur - tail, tail, _scale_step_below(pitch, allowed, chord_pcs), max(30, vel - 18), "", tone))
         else:
             notes.append(Note(beat, dur, pitch, vel, token, tone))
         prev_tone = tone

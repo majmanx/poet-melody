@@ -320,6 +320,12 @@ def close_voicing(chord: Chord, low: int = 48, high: int = 72, max_voices: int =
         prev = voicing[-1]
         nxt = prev + ((pc - prev) % 12 or 12)
         voicing.append(nxt)
+    # A seventh a semitone below the next voice (maj7 under the root) is
+    # opened up by dropping the lower voice an octave when there is room.
+    for i in range(len(voicing) - 1):
+        if voicing[i + 1] - voicing[i] == 1 and voicing[i] - 12 >= low - 5:
+            voicing[i] -= 12
+    voicing.sort()
     # Keep inside the range by dropping the whole stack an octave if needed.
     while voicing and voicing[-1] > high and voicing[0] - 12 >= low - 12:
         voicing = [v - 12 for v in voicing]
@@ -353,7 +359,15 @@ def voice_lead(prev: Optional[Sequence[int]], chord: Chord, low: int = 48, high:
         s = sorted(voicing)
         unisons = len(voicing) - len(set(voicing))
         spread = s[-1] - s[0]
-        score = motion + 6 * unisons + (2 if spread > 19 else 0)
+        # Adjacent semitones (a maj7 stacked right under its root) and seconds
+        # below middle C are the sour, muddy voicings: penalise them.
+        seconds = 0
+        for a, b in zip(s, s[1:]):
+            if b - a == 1:
+                seconds += 8
+            elif b - a == 2 and a < 60:
+                seconds += 4
+        score = motion + 6 * unisons + (2 if spread > 19 else 0) + seconds
         if best is None or score < best[0]:
             best = (score, s)
     assert best is not None
