@@ -407,6 +407,12 @@
       var prev = voicing[voicing.length - 1];
       voicing.push(prev + (mod(pcs[i] - prev, 12) || 12));
     }
+    // A seventh a semitone below the next voice (maj7 under the root) is opened up by
+    // dropping the lower voice an octave when there is room.
+    for (i = 0; i < voicing.length - 1; i++) {
+      if (voicing[i + 1] - voicing[i] === 1 && voicing[i] - 12 >= low - 5) voicing[i] -= 12;
+    }
+    voicing.sort(function (a, b) { return a - b; });
     while (voicing.length && voicing[voicing.length - 1] > high && voicing[0] - 12 >= low - 12) {
       voicing = voicing.map(function (v) { return v - 12; });
     }
@@ -447,7 +453,14 @@
       var s = voicing.slice().sort(function (a, b) { return a - b; });
       var unisons = voicing.length - uniq(voicing).length;
       var spread = s[s.length - 1] - s[0];
-      var score = motion + 6 * unisons + (spread > 19 ? 2 : 0);
+      // Adjacent semitones (a maj7 stacked right under its root) and seconds below
+      // middle C are the sour, muddy voicings: penalise them.
+      var seconds = 0;
+      for (var si = 0; si + 1 < s.length; si++) {
+        if (s[si + 1] - s[si] === 1) seconds += 8;
+        else if (s[si + 1] - s[si] === 2 && s[si] < 60) seconds += 4;
+      }
+      var score = motion + 6 * unisons + (spread > 19 ? 2 : 0) + seconds;
       if (best === null || score < best[0]) best = [score, s];
     }
     return best[1];
@@ -1486,59 +1499,118 @@
   // =========================================================================
   // melody.py
   // =========================================================================
-  function planRhythm(line, beatsPerBar, arousal, irregularity, rng, minBars, stretch) {
+  var CAESURA_PUNCT = '，、；：—…,;:';
+  function isCjkRange(ch) { var cp = ch.codePointAt(0); return cp >= 0x3400 && cp <= 0x9FFF; }
+
+  // Indices of syllables after which the line breathes (顿 / caesura). Punctuation inside
+  // the line always breaks it; classical Chinese metres break where the reader does
+  // (五言 2+3, 七言 4+3); English lines break only at punctuation.
+  function caesuraPoints(line) {
+    var syls = line.syllables, n = syls.length;
+    var points = [], count = 0, i;
+    var zh = n ? syls.every(function (x) { return chars(x).length === 1 && isCjkRange(x); }) : false;
+    if (zh) {
+      var cs = chars(line.text);
+      for (i = 0; i < cs.length; i++) {
+        var ch = cs[i];
+        if (isCjkRange(ch)) count += 1;
+        else if (CAESURA_PUNCT.indexOf(ch) >= 0 && 0 < count && count < n) points.push(count - 1);
+      }
+    } else {
+      var re = /[A-Za-z']+|[0-9]|[，、；：—…,;:]/g, m;
+      while ((m = re.exec(line.text)) !== null) {
+        var tok = m[0];
+        if (CAESURA_PUNCT.indexOf(tok) >= 0) { if (0 < count && count < n) points.push(count - 1); }
+        else if (/^[0-9]$/.test(tok)) count += 1;
+        else count += englishSyllables(tok).length;
+      }
+    }
+    if (!points.length && zh) {
+      if (n === 5) points = [1];
+      else if (n === 7) points = [3];
+      else if (n === 4) points = [1];
+      else if (n === 6) points = [1, 3];
+      else if (n >= 8 && n % 2 === 0) points = [n / 2 - 1];
+    }
+    return uniq(points.filter(function (p) { return 0 <= p && p < n - 1; })).sort(function (x, y) { return x - y; });
+  }
+
+  // Rhythm follows the text's prosody: syllables before a caesura are lengthened and followed
+  // by a breath; for Chinese, level tones (平) are long and oblique tones (仄) short (平长仄短).
+  // `stretch` > 1 slows the line (word painting for stillness); `regular` (0..1) reduces syncopation.
+  function planRhythm(line, beatsPerBar, arousal, irregularity, rng, minBars, stretch, tones, regular) {
     if (minBars === undefined) minBars = 1;
     if (stretch === undefined) stretch = 1.0;
+    if (regular === undefined) regular = 0.5;
     var n = line.syllables.length;
+    tones = (tones && tones.length) ? tones.slice() : tonesOf(line.syllables);
+    var breaks = caesuraPoints(line);
+    var inBreaks = function (i) { return includes(breaks, i); };
+    var weights = [], i;
+    for (i = 0; i < n; i++) {
+      var w = 1.0;
+      var t = i < tones.length ? tones[i] : 0;
+      if (t === 1 || t === 2) w *= 1.2;
+      else if (t === 3 || t === 4) w *= 0.85;
+      if (inBreaks(i)) w *= 1.6;
+      if (i === n - 1) w *= 1.5;
+      weights.push(w);
+    }
+    var wsum = sum(weights);
     var base = (1.05 - 0.6 * arousal) * stretch;
-    var tail = arousal < 0.5 ? 1.0 : 0.5;
-    var bars = Math.max(minBars, Math.ceil((n * base + tail) / beatsPerBar));
+    var tail = arousal < 0.5 ? 1.0 : 0.5;          // breath at the end of the phrase
+    var breath = arousal < 0.6 ? 0.5 : 0.25;       // breath after a caesura
+    var need = wsum * base + tail + breath * breaks.length;
+    var bars = Math.max(minBars, Math.ceil(need / beatsPerBar));
     var grid = arousal < 0.6 ? 0.5 : 0.25;
     var total = bars * beatsPerBar;
     var avail = total - tail;
-    while (n * grid > avail) {
+    while ((n + breaks.length) * grid > avail) {
       if (grid > 0.25) grid = 0.25;
       else { bars += 1; total = bars * beatsPerBar; avail = total - tail; }
     }
-    var slots = pyRound(avail / grid);
-    var posSet = [];
-    for (var i = 0; i < n; i++) {
-      var p = Math.min(slots - 1, pyRound(i * slots / n));
-      if (!includes(posSet, p)) posSet.push(p);
+    // Allocate beats proportionally, breaths included, and snap to the grid.
+    var sing = avail - breath * breaks.length;
+    var onsets = [], cursor = 0.0;
+    for (i = 0; i < n; i++) {
+      onsets.push(pyRound(cursor / grid) * grid);
+      cursor += weights[i] / wsum * sing;
+      if (inBreaks(i)) cursor += breath;
     }
-    var positions = posSet.sort(function (a, b) { return a - b; });
-    while (positions.length < n) {
-      var free = [];
-      for (var s = 0; s < slots; s++) if (!includes(positions, s)) free.push(s);
-      var bestS = null, bestD = Infinity;
-      for (var fi = 0; fi < free.length; fi++) {
-        var d = Infinity;
-        for (var pi = 0; pi < positions.length; pi++) d = Math.min(d, Math.abs(free[fi] - positions[pi]));
-        if (d < bestD) { bestD = d; bestS = free[fi]; }
+    // Repair collisions after rounding.
+    for (i = 1; i < n; i++) if (onsets[i] <= onsets[i - 1]) onsets[i] = onsets[i - 1] + grid;
+    while (onsets.length && onsets[onsets.length - 1] > avail - grid) {
+      var prevOnsets = onsets;
+      onsets = prevOnsets.map(function (o, k) {
+        return (k > 0 && prevOnsets[k] > prevOnsets[k - 1] + grid) ? o - grid : o;
+      });
+      if (onsets[onsets.length - 1] > avail - grid) {
+        bars += 1; total = bars * beatsPerBar; avail = total - tail;
+        break;
       }
-      positions.push(bestS);
-      positions.sort(function (a, b) { return a - b; });
     }
-    var jitter = 0.1 + 0.35 * irregularity + 0.2 * arousal;
+    // Light syncopation for irregular / energetic texts, never at a caesura.
+    var jitter = (0.05 + 0.3 * irregularity + 0.2 * arousal) * (1.0 - regular);
     for (i = 1; i < n; i++) {
+      if (inBreaks(i - 1) || inBreaks(i)) continue;
       if (rng.random() < jitter) {
-        var cand = positions[i] + rng.choice([-1, 1]);
-        var lo = positions[i - 1] + 1;
-        var hi = i + 1 < n ? positions[i + 1] - 1 : slots - 1;
-        if (lo <= cand && cand <= hi) positions[i] = cand;
+        var cand = onsets[i] + rng.choice([-grid, grid]);
+        var lo = onsets[i - 1] + grid;
+        var hi = i + 1 < n ? onsets[i + 1] - grid : avail - grid;
+        if (lo <= cand && cand <= hi) onsets[i] = cand;
       }
     }
-    positions[0] = 0;
-    var onsets = positions.map(function (p) { return p * grid; });
+    onsets[0] = 0.0;
     var durations = [];
     for (i = 0; i < onsets.length; i++) {
       var nxt = i + 1 < n ? onsets[i + 1] : avail;
       var dur = nxt - onsets[i];
+      if (inBreaks(i)) dur = Math.max(grid, dur - breath);   // the breath after the caesura
       if (i + 1 < n) dur = Math.min(dur, 2.0);
       else dur = Math.min(Math.max(dur, 1.0), 3.0);
       durations.push(dur);
     }
-    return { line: line, bars: bars, onsets: onsets, durations: durations };
+    return { line: line, bars: bars, onsets: onsets, durations: durations, breaks: breaks.slice() };
   }
 
   function phraseArc(x, line, ending) {
@@ -1581,8 +1653,19 @@
     return chords.length ? chords[chords.length - 1] : null;
   }
 
-  function scaleStepBelow(pitch, allowed) {
-    for (var d = 1; d < 4; d++) if (includes(allowed, mod(pitch - d, 12))) return pitch - d;
+  // Nearest allowed pitch below `pitch` that is not a semitone above a chord tone
+  // (grace notes land on the beat, so they must not clash).
+  function scaleStepBelow(pitch, allowed, chordPcs) {
+    chordPcs = chordPcs || [];
+    for (var d = 1; d < 5; d++) {
+      var cand = pitch - d, cpc = mod(cand, 12);
+      if (!includes(allowed, cpc)) continue;
+      var clash = false;
+      if (!includes(chordPcs, cpc)) {
+        for (var k = 0; k < chordPcs.length; k++) if (mod(cand - chordPcs[k], 12) === 1) { clash = true; break; }
+      }
+      if (!clash) return cand;
+    }
     return pitch - 2;
   }
 
@@ -1648,6 +1731,9 @@
       if (tone) target += (TONE_LEVEL[tone] - 0.55) * 4.0;
       var posInBar = mod(beat, beatsPerBar);
       var strong = includes(strongBeats, pyRound(posInBar * 4) / 4);
+      var chordEnd = chordAt(chords, beat + dur - 0.01);
+      var nextChord = (chordEnd !== chord && chord !== null && beat + dur - (chord.start + chord.duration) >= 0.5) ? chordEnd : null;
+      var atBreak = includes(plan.breaks || [], i);
       var last = i === n - 1;
       var first = i === 0;
       var wantDir = (zh && cfg.tone_weight > 0 && !first) ? toneDirection(prevTone, tone) : 0;
@@ -1696,6 +1782,7 @@
         } else {
           if (!inChord) score -= 2.0;
         }
+        if (atBreak) score += inChord ? 1.2 : -1.2;   // the lengthened syllable before a caesura rests on a chord tone
         // Phrase endings rest on triad tones, not on sevenths or extensions.
         if (last) {
           var deg = mod(p - tonic, 12);
@@ -1717,6 +1804,14 @@
             if (ppc === tonic) score += 3.0;
           }
           if (has('home') && ppc === tonic) score += 2.0;
+        }
+        if (nextChord !== null) {
+          // The note is held into the next chord: it must belong there too.
+          var npcs = nextChord.pcs, pp = mod(p, 12);
+          if (!includes(npcs, pp)) {
+            score -= 2.5;
+            for (var ni2 = 0; ni2 < npcs.length; ni2++) if (mod(p - npcs[ni2], 12) === 1) { score -= 3.0; break; }
+          }
         }
         if (p > center + 10 || p < center - 9) score -= 3.0;
         score += lineRng.random() * cfg.temperature;
@@ -1740,14 +1835,14 @@
         lineRng.random() < cfg.ornament_prob;
       if (ornamentOk && (tone === 2 || tone === 3)) {
         var grace = Math.min(0.25, dur / 3);
-        var below = scaleStepBelow(pitch, allowed);
-        if (tone === 3) below = scaleStepBelow(below, allowed);
+        var below = scaleStepBelow(pitch, allowed, chordPcs);
+        if (tone === 3) below = scaleStepBelow(below, allowed, chordPcs);
         notes.push(Note(beat, grace, below, Math.max(30, vel - 14), '', tone));
         notes.push(Note(beat + grace, dur - grace, pitch, vel, token, tone));
       } else if (ornamentOk && tone === 4) {
         var tail = Math.min(0.25, dur / 3);
         notes.push(Note(beat, dur - tail, pitch, vel, token, tone));
-        notes.push(Note(beat + dur - tail, tail, scaleStepBelow(pitch, allowed), Math.max(30, vel - 18), '', tone));
+        notes.push(Note(beat + dur - tail, tail, scaleStepBelow(pitch, allowed, chordPcs), Math.max(30, vel - 18), '', tone));
       } else {
         notes.push(Note(beat, dur, pitch, vel, token, tone));
       }
@@ -2368,7 +2463,9 @@
       for (var li = 0; li < stanza.lines.length; li++) {
         var devices = li < reading.lines.length ? reading.lines[li].devices : [];
         var stretch = includes(devices, 'still') ? 1.35 : 1.0;
-        linePlans.push(planRhythm(stanza.lines[li], bpb, f.arousal, f.irregularity, rng, 1, stretch));
+        var regular = st.family === 'classical' ? 0.8 : (includes(['trance', 'house', 'pop'], st.name) ? 0.6 : 0.3);
+        linePlans.push(planRhythm(stanza.lines[li], bpb, f.arousal, f.irregularity, rng, 1, stretch,
+          tonesOf(stanza.lines[li].syllables), regular));
       }
       var totalBars = sum(linePlans.map(function (p) { return p.bars; }));
       var cycle = nums.length * st.bars_per_chord;
@@ -2532,10 +2629,15 @@
         keysTr.notes = keysTr.notes.filter(function (n) { return !inSpan(n, a, b_); });
       }
       if (rd.role === 'climax' && nSections > 1 && st.keys !== 'none') {
+        // Brighten the climax by doubling only the top voice an octave up.
+        var byStart = new Map();
         for (ni = 0; ni < keysTr.notes.length; ni++) {
           nn = keysTr.notes[ni];
-          if (inSpan(nn, a, b_)) doubled.push(Note(nn.start, nn.duration, nn.pitch + 12, Math.max(20, nn.velocity - 12)));
+          if (inSpan(nn, a, b_) && (!byStart.has(nn.start) || nn.pitch > byStart.get(nn.start).pitch)) byStart.set(nn.start, nn);
         }
+        byStart.forEach(function (top) {
+          doubled.push(Note(top.start, top.duration, top.pitch + 12, Math.max(20, top.velocity - 14)));
+        });
       }
     }
     keysTr.notes = keysTr.notes.concat(doubled);
@@ -2742,6 +2844,8 @@
     interpret: interpret,
     detectPoemForm: detectPoemForm,
     planForm: planForm,
+    caesuraPoints: caesuraPoints,
+    planRhythm: planRhythm,
     PAINTING: PAINTING,
     englishSyllables: englishSyllables,
     splitSyllables: splitSyllables,
