@@ -73,6 +73,26 @@
   .progress { height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; margin-top: 10px; }
   .progress i { display: block; height: 100%; width: 0; background: var(--moon); }
   .note { color: var(--muted); font-size: 12.5px; }
+  .poems { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 6px; scrollbar-width: thin; }
+  .poem { flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 10px; padding: 6px 10px; font-size: 13px; cursor: pointer; text-align: left; max-width: 220px; }
+  .poem b { display: block; font: 600 14px "Noto Serif SC", serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .poem small { color: var(--muted); }
+  .memo { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .lyrics.hide span.s:not(.now):not(.done) { color: transparent; background: var(--surface-2); border-radius: 4px; }
+  .lyrics.hide span.s:not(.now):not(.done) sup { color: transparent; }
+  .lyrics.first span.s:not(.now):not(.done):not(.keep) { color: transparent; background: var(--surface-2); border-radius: 4px; }
+  .lyrics.first span.s:not(.now):not(.done):not(.keep) sup { color: transparent; }
+  .mood textarea { min-height: 72px; font: 15px/1.6 "Noto Sans SC", sans-serif; }
+  .recs { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+  .rec { background: var(--ground); border-radius: 10px; padding: 10px 12px; }
+  .rec b { font: 600 15px "Noto Serif SC", serif; }
+  .rec .why { color: var(--muted); font-size: 13px; margin: 4px 0; }
+  .rec pre { white-space: pre-wrap; font: 500 15px/1.7 "Noto Serif SC", serif; margin: 6px 0; }
+  .prompt { background: var(--ground); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+  .prompt b { display: block; margin-bottom: 4px; }
+  .prompt pre { white-space: pre-wrap; font: 12.5px/1.6 ui-monospace, Menlo, monospace; color: var(--muted); margin: 0 0 6px; max-height: 160px; overflow: auto; }
+  .prompt button { font-size: 12px; padding: 6px 10px; }
+  .howto li { margin: 4px 0; font-size: 13.5px; }
   .toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--ground); padding: 8px 14px; border-radius: 999px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
   .toast.show { opacity: 1; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -90,6 +110,13 @@
 疑是地上霜。
 举头望明月，
 低头思故乡。</textarea>
+    <div style="height:10px"></div>
+    <label class="field">名诗速览 · 点一首立刻听</label>
+    <div class="poems" id="poems"></div>
+    <div class="row" style="margin-top:6px">
+      <button class="ghost" id="randomPoem" type="button">🎲 随机一首</button>
+      <span class="note" style="flex:3 1 200px">古今中外公版名作节选；也可以粘贴自己的信、日记、歌词。</span>
+    </div>
     <div style="height:10px"></div>
     <label class="field">风格</label>
     <div class="chips" id="styles" role="group" aria-label="风格"></div>
@@ -131,7 +158,13 @@
     <div class="stats" id="stats"></div>
     <div style="height:14px"></div>
     <h2>旋律 · 每字一音（上标为普通话声调）</h2>
+    <div class="memo" role="group" aria-label="记诵模式">
+      <button class="chip" type="button" data-memo="show" aria-pressed="true">显示全文</button>
+      <button class="chip" type="button" data-memo="hide" aria-pressed="false">记诵：边唱边现</button>
+      <button class="chip" type="button" data-memo="first" aria-pressed="false">记诵：只留首字</button>
+    </div>
     <div class="lyrics" id="lyrics"></div>
+    <p class="note" id="memoNote" hidden>用旋律记诗：先跟着听两遍，再切到"只留首字"跟唱；卡住的字会随旋律和和弦"回来"——声调走向就是提示。</p>
     <div style="height:14px"></div>
     <h2>和声</h2>
     <div class="chords" id="chords"></div>
@@ -145,14 +178,53 @@
     <details><summary>音色配方（可在任何合成器上重建）</summary><div id="patches"></div></details>
     <div style="height:12px"></div>
     <div class="actions">
+      <button class="ghost" id="dlMidi" hidden>下载 MIDI</button>
+      <button class="ghost" id="dlJson" hidden>下载 JSON</button>
       <button class="ghost" id="copy">复制 JSON</button>
       <button class="ghost" id="reseed">换一个版本</button>
     </div>
-    <p class="note">同一文本永远得到同一首曲子；"换一个版本"换随机种子。JSON 可交给仓库里的 CLI 渲染 WAV / MIDI，或拖进 web/player.html。</p>
+    <p class="note">同一文本永远得到同一首曲子；"换一个版本"换随机种子。MIDI 可导入任何 DAW；JSON 可交给仓库里的 CLI 渲染 WAV。</p>
+  </section>
+
+  <section class="card mood" id="moodCard" hidden>
+    <h2>按心情找诗 · 太阳底下无新事</h2>
+    <p class="note">写下此刻的心情或遭遇。历史上总有人在相似的处境里写过一句话，AI 会替你找出来，并推荐一种风格来唱它。</p>
+    <textarea id="mood" placeholder="例如：刚搬到新城市，夜里很安静，有点想家，但也期待。"></textarea>
+    <div class="actions" style="margin-top:8px">
+      <button class="primary" id="findPoem">找诗</button>
+      <button class="ghost" id="stopFind" hidden>停止</button>
+    </div>
+    <div id="recs" class="recs"></div>
+    <p class="note">AI 凭记忆引用，用之前请核对原文；找到的诗一键载入即可试听。</p>
+  </section>
+
+  <section class="card">
+    <details>
+      <summary>提示词工具箱 · 找全诗、用歌记诗、按情绪配诗</summary>
+      <div class="prompt"><b>① 取得完整、可唱的诗词文本</b><pre id="p1"></pre><button class="ghost" type="button" data-copy="p1">复制提示词</button></div>
+      <div class="prompt"><b>② 反向用歌记诗（旋律记忆法）</b><pre id="p2"></pre><button class="ghost" type="button" data-copy="p2">复制提示词</button></div>
+      <div class="prompt"><b>③ 按当下的情绪与遭遇匹配诗句</b><pre id="p3"></pre><button class="ghost" type="button" data-copy="p3">复制提示词</button></div>
+      <p class="note">把提示词贴给任意 AI 助手，把得到的文本粘回上面的输入框即可。</p>
+    </details>
+  </section>
+
+  <section class="card">
+    <details>
+      <summary>它是怎么把字变成音乐的 · 怎么玩</summary>
+      <ol class="howto">
+        <li><b>读诗如读词本</b>：先判断诗体（绝句、律诗、书信、自由诗），规划曲式（A / ABA / AABA…），找出情绪高潮段。</li>
+        <li><b>情绪定调性与音色</b>：效价决定大小调与亮度，能量决定速度与包络，温暖度决定正弦 / 锯齿波和降号 / 升号调。</li>
+        <li><b>断句定节奏</b>：五言二三顿、七言四三顿、逗号处换气；平声长、仄声短。</li>
+        <li><b>依字行腔</b>：去声到阴平必须上行，阴平到上声必须下行，否则就是"倒字"；阳平上滑、去声下落。</li>
+        <li><b>起承转合</b>：第三句下面换一个色彩和弦并抬高音区，第四句用最强终止；句尾字上扬的段落停在属和弦上等待。</li>
+        <li><b>玩法</b>：换风格听同一首诗的不同人格；用"记诵"模式背诗；把自己的信贴进来听它的情绪弧线；点"换一个版本"听另一种唱法。</li>
+      </ol>
+    </details>
   </section>
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="poems.js"></script>
 <script src="tones.js"></script>
 <script src="engine.js"></script>
 <script>
@@ -162,6 +234,7 @@ const DRUMS = {36:'kick', 38:'snare', 39:'clap', 42:'hat', 46:'ohat', 51:'ride'}
 let comp = null, ctx = null, master = null, timer = null, startAt = 0, cursor = 0, queue = [], seedBump = 0;
 const trackBus = {};
 let styleChoice = 'auto';
+let memoMode = 'show';
 
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1600); }
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -227,6 +300,7 @@ function render() {
   }
   if (k < sung.length) html.push(`<span class="line">${sung.slice(k).map(({n, i}) => `<span class="s" data-i="${i}">${esc(n.lyric)}</span>`).join('')}</span>`);
   $('lyrics').innerHTML = html.join('');
+  applyMemo();
   $('chords').innerHTML = comp.chords.map((c, i) => `<div class="chord" data-i="${i}">${esc(c.symbol)}<small>${esc(c.numeral)}</small></div>`).join('');
   const ROLE_ZH = {intro:'前奏', exposition:'呈示', development:'发展', climax:'高潮', release:'回落', resolution:'收束', salutation:'称呼', farewell:'告别', single:'单段', outro:'尾声'};
   $('sections').innerHTML = comp.sections.map(s => `<div class="sec"><span class="lab">${esc(s.label || '')}</span>
@@ -362,6 +436,127 @@ function stop(reset) {
   if (reset) { $('bar').style.width = '0'; document.querySelectorAll('#lyrics span.s').forEach(el => el.className = 's'); document.querySelectorAll('#chords .chord').forEach(el => { el.className = 'chord'; el._scrolled = false; }); }
 }
 
+// ---- poems ---------------------------------------------------------------------------
+function loadPoem(p) {
+  $('text').value = p.text;
+  seedBump = 0;
+  generate();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+function buildPoems() {
+  const list = window.POET_POEMS || [];
+  $('poems').innerHTML = list.map((p, i) => `<button class="poem" type="button" data-i="${i}"><b>${esc(p.title)}</b><small>${esc(p.author)} · ${esc(p.era)} · ${esc(p.tag)}</small></button>`).join('');
+  $('poems').querySelectorAll('.poem').forEach(b => b.onclick = () => loadPoem(list[+b.dataset.i]));
+  $('randomPoem').onclick = () => loadPoem(list[Math.floor(Math.random() * list.length)]);
+}
+
+// ---- memorisation mode -------------------------------------------------------------------
+function applyMemo() {
+  const ly = $('lyrics');
+  ly.classList.toggle('hide', memoMode === 'hide');
+  ly.classList.toggle('first', memoMode === 'first');
+  ly.querySelectorAll('.line').forEach(line => { const f = line.querySelector('span.s'); if (f) f.classList.add('keep'); });
+  $('memoNote').hidden = memoMode === 'show';
+}
+document.querySelectorAll('[data-memo]').forEach(b => b.onclick = () => {
+  memoMode = b.dataset.memo;
+  document.querySelectorAll('[data-memo]').forEach(x => x.setAttribute('aria-pressed', x.dataset.memo === memoMode));
+  applyMemo();
+});
+
+// ---- prompts toolbox -----------------------------------------------------------------------
+const PROMPTS = {
+  p1: `请给我《{诗名}》（作者：{作者}）的完整原文，要求：
+1. 按原诗分行，一句一行；词牌 / 段落之间空一行；
+2. 标点用中文全角，保留原文的问号与感叹号（它们会影响旋律的走向）；
+3. 只给正文，不要注释、译文和赏析；
+4. 如果全诗太长，请给最能独立成篇的 4–8 行节选，并注明"节选"。
+我要把它贴进一个"把诗唱成歌"的工具里，所以断句必须准确。`,
+  p2: `我在用一个工具把诗词变成旋律来背诵（每个字一个音，声调决定旋律走向：去声后必上行、阴平后往下走）。请帮我为《{诗名}》设计一套"用歌记诗"的方法：
+1. 把全诗按 2+3 / 4+3 的顿断成可唱的小单元，每个单元标出"高潮字"（意思最重的字）；
+2. 为每一句写一个 5 字以内的联想线索（画面或动作），线索与句意押韵或谐音更好；
+3. 给出一个 4 天的复习安排：第 1 天听 3 遍并跟唱，第 2 天用"只留首字"模式，第 3 天只看线索，第 4 天默写；
+4. 最后用一句话解释这首诗的情绪弧线（起—承—转—合），告诉我在哪一句该唱得最响。`,
+  p3: `太阳底下无新事：所有的处境在历史上都发生过，只是时间与方式不同。
+这是我现在的心情和遭遇：
+{写下你的情况}
+请从古今中外的诗词中找 3 首（可以是节选，4–8 行），要求：
+1. 每首先给原文，一句一行；
+2. 用一句话说明：历史上这位作者在怎样相似的处境里写下了它；
+3. 说说这首诗如何"处理"这种情绪（是安慰、是转化、还是陪你一起沉下去）；
+4. 为每首推荐一种演唱风格（古典 / 民谣 / 浪漫 / 爵士 / Lo-fi / 流行 / Synthwave / House / Trance / Ambient / 电影 / 新灵魂）并给理由。
+只引用你有把握准确的原文，不确定的地方请注明。`,
+};
+for (const k in PROMPTS) $(k).textContent = PROMPTS[k];
+document.querySelectorAll('[data-copy]').forEach(b => b.onclick = async () => {
+  try { await navigator.clipboard.writeText(PROMPTS[b.dataset.copy]); toast('已复制提示词'); } catch (e) { toast('无法访问剪贴板'); }
+});
+
+// ---- mood -> poem search (asks Claude on the viewer's account) ------------------------------
+const STYLE_NAMES = ['classical','romantic','folk','jazz','neo_soul','lofi','pop','synthwave','house','trance','ambient','cinematic'];
+let findCtl = null;
+async function setupMood() {
+  if (!window.claude || typeof window.claude.use !== 'function') return;
+  let sample = null;
+  try { sample = await window.claude.use('sample'); } catch (e) { sample = null; }
+  if (!sample) return;
+  $('moodCard').hidden = false;
+  $('stopFind').onclick = () => { if (findCtl) findCtl.abort(); };
+  $('findPoem').onclick = async () => {
+    const mood = $('mood').value.trim();
+    if (!mood) { toast('先写一句现在的心情'); return; }
+    findCtl = new AbortController();
+    $('findPoem').disabled = true; $('stopFind').hidden = false;
+    $('recs').innerHTML = '<div class="rec"><span class="why">正在翻历史的诗页…</span></div>';
+    const prompt = `你是一位博览古今中外诗歌的作曲家。前提是"太阳底下无新事"：所有处境在历史上都发生过，只是时间和方式不同。
+用户此刻的心情或遭遇：
+<<<${mood.slice(0, 1500)}>>>
+请挑 3 首最贴切的诗词（可节选 4–8 行，中英德等原文皆可，优先公版经典），只引用你有把握准确的原文。
+只回复一个 JSON 数组，每项：{"title": 诗名, "author": 作者, "era": 年代, "lines": 原文（一句一行，用\n分隔）, "why": 一句话说明作者当时在怎样相似的处境里写下它, "how": 一句话说明它如何处理这种情绪, "style": 从 ${STYLE_NAMES.join('/')} 中选一个最适合演唱它的风格}
+不要任何其他文字。`;
+    try {
+      const data = await sample.json(prompt, {signal: findCtl.signal, cache: false});
+      const recs = Array.isArray(data) ? data : (data && data.poems) || [];
+      if (!recs.length) throw {code: 'invalid_json'};
+      $('recs').innerHTML = recs.slice(0, 3).map((r, i) => `<div class="rec"><b>${esc(r.title || '')}</b> <small>${esc(r.author || '')} · ${esc(r.era || '')}</small>
+        <pre>${esc(String(r.lines || '').replace(/\\n/g, '\n'))}</pre>
+        <div class="why">${esc(r.why || '')}</div><div class="why">${esc(r.how || '')}</div>
+        <button class="ghost" type="button" data-rec="${i}">用这首 · ${esc(STYLE_ZH[r.style] || r.style || '自动')}</button></div>`).join('');
+      $('recs').querySelectorAll('[data-rec]').forEach(b => b.onclick = () => {
+        const r = recs[+b.dataset.rec];
+        if (STYLE_NAMES.includes(r.style)) { styleChoice = r.style; $('styles').querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x.dataset.style === styleChoice)); }
+        loadPoem({text: String(r.lines || '').replace(/\\n/g, '\n')});
+      });
+    } catch (e) {
+      const code = e && e.code;
+      const copy = {cancelled: '已停止。', not_granted: '你没有允许这个页面使用 Claude，功能已隐藏。', sampling_disabled: '此账号不能使用 Claude。',
+        rate_limited: '请求太频繁，稍后再试。', refused: '这个请求被拒绝了，换个说法试试。', invalid_json: '没读到诗，再试一次。', session_expired: '请重新登录。'}[code] || '出了点问题，再试一次。';
+      $('recs').innerHTML = `<div class="rec"><span class="why">${esc(copy)}</span></div>`;
+      if (code === 'not_granted' || code === 'sampling_disabled' || code === 'not_declared') $('moodCard').hidden = true;
+    } finally { $('findPoem').disabled = false; $('stopFind').hidden = true; findCtl = null; }
+  };
+}
+
+// ---- downloads (MIDI / JSON) ------------------------------------------------------------------
+async function setupDownloads() {
+  if (!window.claude || typeof window.claude.use !== 'function') return;
+  let downloads = null;
+  try { downloads = await window.claude.use('downloads'); } catch (e) { downloads = null; }
+  if (!downloads) return;
+  $('dlMidi').hidden = false; $('dlJson').hidden = false;
+  const name = () => (comp && comp.title ? comp.title.replace(/[\\/:*?"<>|\s]+/g, '_').slice(0, 40) : 'poem') + '_' + (comp ? comp.style : '');
+  $('dlMidi').onclick = async () => {
+    if (!comp) return;
+    try { await downloads.save({filename: name() + '.mid', data: new Blob([PoetMelody.midi(comp)])}); toast('已保存 MIDI'); }
+    catch (e) { if (e && e.code !== 'declined') toast('无法保存：' + (e.code || '')); }
+  };
+  $('dlJson').onclick = async () => {
+    if (!comp) return;
+    try { await downloads.save({filename: name() + '.json', data: JSON.stringify(comp)}); toast('已保存 JSON'); }
+    catch (e) { if (e && e.code !== 'declined') toast('无法保存：' + (e.code || '')); }
+  };
+}
+
 // ---- wiring --------------------------------------------------------------------------
 $('gen').onclick = () => { seedBump = 0; generate(); };
 $('reseed').onclick = () => { seedBump += 1; generate(); };
@@ -373,6 +568,9 @@ $('copy').onclick = async () => {
   catch (e) { toast('无法访问剪贴板'); }
 };
 buildStyles();
+buildPoems();
 try { const saved = localStorage.getItem('poet-melody-text'); if (saved) $('text').value = saved; } catch (e) {}
 generate();
+setupMood();
+setupDownloads();
 </script>
